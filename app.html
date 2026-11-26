@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KAIRO</title>
+<meta name="description" content="The Kairo app: watch every new pump.fun coin through Kairo's rules live, scan any coin's block 0, run the simulator, print your launch receipt.">
+<meta name="theme-color" content="#0d0f0d">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/fav-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="/img/fav-64.png">
+<link rel="apple-touch-icon" href="/img/fav-180.png">
+<meta property="og:title" content="KAIRO">
+<meta property="og:description" content="The onchain anti-block-0 protocol. Block 0 is closed.">
+<meta property="og:image" content="/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/silk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/kairo.css?v=1">
+<script type="module" src="/js/app.js?v=1"></script>
+</head>
+<body class="app">
+<div class="prog" id="prog" aria-hidden="true"></div>
+<header class="top solid" id="top">
+  <div class="clock" id="clock" aria-live="off"><i></i><span class="tz">UTC</span><b class="num" id="clockT">--:--:--</b><span class="ms num" id="clockMs">.000</span><span class="nx num" id="clockNx"><em>next :00</em>00:--</span></div>
+  <nav class="nav" id="nav" aria-label="App">
+    <a href="#live" data-tab="live">Live board</a><a href="#scan" data-tab="scan">Scanner</a><a href="#sim" data-tab="sim">Simulator</a><a href="#print" data-tab="print">Receipt printer</a><a href="/docs">Docs</a>
+  </nav>
+  <div class="top-r"><a class="btn o sm" href="/">Home</a><a class="btn g sm" href="#scan" data-tab="scan">Scan a coin</a><button class="menu" id="menuBtn" aria-label="Open the menu"><span></span></button></div>
+</header>
+
+<main class="appm">
+  <div class="app-head">
+    <div>
+      <p class="ey">Kairo app</p>
+      <h1 class="app-h">Every coin, <em>on time.</em></h1>
+    </div>
+    <div class="app-led"><canvas class="led" id="appLed" width="980" height="150" role="img" aria-label="Seconds to the next :00"></canvas></div>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="live"><b>01</b>Live board</button>
+    <button class="tab" role="tab" data-tab="scan"><b>02</b>Scanner</button>
+    <button class="tab" role="tab" data-tab="sim"><b>03</b>Simulator</button>
+    <button class="tab" role="tab" data-tab="print"><b>04</b>Receipt printer</button>
+  </div>
+
+  <!-- 01: the live board -->
+  <section class="panel" id="p-live" data-panel="live">
+    <div class="ph">
+      <div><h2>The openings board</h2><p>Every new pump.fun coin as it's born, read through Kairo's rules. Buys before the next :00 would have waited, and every coin born this minute opens together at :00.</p></div>
+      <div class="feed" id="feed"><span class="st" id="feedSt"><i></i><b>Connecting</b></span><button class="btn o sm" id="feedRetry" type="button" hidden>Retry ↻</button></div>
+    </div>
+    <div class="stats" id="stats">
+      <div><span>Coins born since you opened this</span><b class="num" id="stBorn">0</b></div>
+      <div><span>Buys that would have waited for :00</span><b class="num" id="stHeld">0</b></div>
+      <div><span>Likely block 0 bundles</span><b class="num" id="stB0">0</b></div>
+      <div><span>Coins opened together at the last :00</span><b class="num" id="stOpened">—</b></div>
+    </div>
+    <div class="board" id="board">
+      <div class="brow bh"><span>Coin</span><span>Born (UTC)</span><span>Dev buy</span><span>Before :00</span><span>Opens</span><span></span></div>
+      <div class="bempty" id="bEmpty">Waiting for the next coin to be born on pump.fun…</div>
+    </div>
+    <p class="note">Read live from PumpPortal's public pump.fun feed in your browser. "Before the feed's first trade" means tokens left the curve in trades the feed never sent, which is usually a block 0 bundle. Scan the coin to check its block 0 on chain.</p>
+  </section>
+
+  <!-- 02: the scanner -->
+  <section class="panel" id="p-scan" data-panel="scan" hidden>
+    <div class="ph"><div><h2>Block 0 scanner</h2><p>Paste any Solana coin. Kairo walks back to the block it was born in, then replays every buy until the next :00 through its rules.</p></div><span class="tagl">Live · read from Solana</span></div>
+    <div class="card scan">
+      <form id="scanForm" autocomplete="off"><label class="field"><input id="scanIn" placeholder="Paste a coin's contract address" spellcheck="false" aria-label="A coin's contract address"><span class="pst" id="scanPaste">PASTE</span></label><button class="btn g lg" type="submit">Scan block 0 <span class="ar">→</span></button></form>
+      <div class="err" id="scanErr" role="status"></div>
+      <div class="scan-out" id="scanOut">
+        <div class="scan-empty">
+          <div><b>BLOCK 0</b>Every wallet that bought in the block the coin was born.</div>
+          <div><b>BUNDLES</b>Wallets funded by the dev, or by one hand, just before they bought.</div>
+          <div><b>BEFORE :00</b>Buys that landed before the next minute, when a Kairo coin would open.</div>
+          <div><b>VERDICT</b>What Kairo would have turned away, and what would have waited.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03: the simulator -->
+  <section class="panel" id="p-sim" data-panel="sim" hidden>
+    <div class="ph"><div><h2>Two launches, one crowd</h2><p>The same made-up coin launched twice with the same wallets: once the usual way, once the Kairo way.</p></div></div>
+    <div class="card sim">
+      <div class="sim-top"><span class="tagl"><b>Simulation</b> · not a real coin · every wallet is made up</span><button class="btn g" id="simGo" type="button">Run a test launch <span class="ar">→</span></button></div>
+      <div class="lanes">
+        <div class="lane"><div class="lane-h"><span class="t">A NORMAL LAUNCH</span><span class="num" id="simClockA">BLOCK 0</span></div><canvas id="simA"></canvas><div class="supply"><i class="dv" id="sAd"></i><i class="bt" id="sAb"></i><i class="hm" id="sAh"></i></div><div class="lane-f" id="simFA"><span>Press run to start.</span></div></div>
+        <div class="lane k"><div class="lane-h"><span class="t">A KAIRO LAUNCH</span><span class="num" id="simClockB">BLOCK 0</span></div><canvas id="simB"></canvas><div class="supply"><i class="dv" id="sBd"></i><i class="bt" id="sBb"></i><i class="hm" id="sBh"></i></div><div class="lane-f" id="simFB"><span>Press run to start.</span></div></div>
+      </div>
+      <div class="verdicts">
+        <div class="vd"><span>Supply taken before the first person could buy</span><b class="num" id="vd1">—</b></div>
+        <div class="vd"><span>Bundle and sniper wallets in block 0</span><b class="num" id="vd2">—</b></div>
+        <div class="vd"><span>What people paid next to the bots</span><b class="num" id="vd3">—</b></div>
+      </div>
+      <p class="sim-note">A simple bonding curve and made-up wallets. Inside the opening block, order is set by the network, not by who saw the coin first.</p>
+    </div>
+  </section>
+
+  <!-- 04: the receipt printer -->
+  <section class="panel" id="p-print" data-panel="print" hidden>
+    <div class="ph"><div><h2>Print your launch receipt</h2><p>Draft the receipt your coin would carry on Kairo: one buy in block 0, yours, and the second it opens. Launches open in Lap 2; this prints a draft you can save and share.</p></div></div>
+    <div class="printer-app">
+      <form class="card pform" id="pform" autocomplete="off">
+        <label class="pf"><span>Coin name</span><input id="pName" maxlength="24" placeholder="Your coin's name"></label>
+        <label class="pf"><span>Ticker</span><input id="pTick" maxlength="10" placeholder="TICKER"></label>
+        <label class="pf"><span>Your buy in block 0 <b class="num" id="pBuyV">1.0%</b></span><input id="pBuy" type="range" min="0" max="5" step="0.1" value="1"></label>
+        <div class="pf"><span>Opens</span>
+          <div class="seg" id="pOpen"><button type="button" data-m="1" class="on">Next :00</button><button type="button" data-m="2">+1 min</button><button type="button" data-m="5">+4 min</button><button type="button" data-m="10">+9 min</button></div>
+        </div>
+        <div class="prow"><button class="btn g" id="pPng" type="button">Save as PNG <span class="ar">↓</span></button><a class="btn o" id="pX" target="_blank" rel="noopener">Post on X</a></div>
+        <p class="note">A draft, not a launch. Nothing is created, signed or sent.</p>
+      </form>
+      <div class="printer big"><div class="slot"></div>
+        <div class="paper vis" id="pPaper">
+          <span class="spec">DRAFT</span>
+          <div class="c big">KAIRO</div><div class="c">OPENING RECEIPT</div><hr>
+          <div class="row"><span>COIN</span><span id="rCoin">YOUR TICKER</span></div>
+          <div class="row"><span>NAME</span><span id="rName">YOUR COIN</span></div>
+          <div class="row"><span>VENUE</span><span>SOLANA</span></div><hr>
+          <div class="row"><span>BLOCK 0</span><span>1 BUY</span></div>
+          <div class="row"><span>BUYER</span><span>THE CREATOR</span></div>
+          <div class="row"><span>SIZE</span><span id="rBuy">1.0% OF SUPPLY</span></div>
+          <div class="row"><span>BUNDLES</span><span class="ok">0</span></div>
+          <div class="row"><span>SNIPES</span><span class="ok">0</span></div><hr>
+          <div class="row"><span>OPENS AT</span><span class="num" id="rOpen">--:--:00 UTC</span></div>
+          <div class="row"><span>OPENS IN</span><span class="num" id="rIn">--:--</span></div>
+          <div class="row"><span>BEFORE OPEN</span><span class="ok">0 TRADES</span></div>
+          <div class="row"><span>OPENING BLOCK</span><span>EVERYONE</span></div><hr>
+          <div class="c">NOT FIRST. ON TIME.</div>
+          <div class="bars"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+</body>
+</html>

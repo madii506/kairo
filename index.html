@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KAIRO</title>
+<meta name="description" content="KAIRO is the onchain anti-block-0 protocol. Block 0 is one buy, the dev's. No bundles, no snipes, and every coin opens for everyone at the same second.">
+<meta name="theme-color" content="#0d0f0d">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/fav-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="/img/fav-64.png">
+<link rel="apple-touch-icon" href="/img/fav-180.png">
+<meta property="og:title" content="KAIRO">
+<meta property="og:description" content="The onchain anti-block-0 protocol. Block 0 is closed.">
+<meta property="og:image" content="/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/silk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/kairo.css?v=4">
+<script src="/js/pre.js?v=1"></script>
+<script src="/vendor/lenis.min.js" defer></script>
+<script type="module" src="/js/home.js?v=4"></script>
+</head>
+<body class="home">
+<canvas id="bgDots" aria-hidden="true"></canvas>
+<div id="intro" aria-hidden="true"><canvas id="introCv" width="1720" height="520"></canvas></div>
+<div class="prog" id="prog" aria-hidden="true"></div>
+
+
+<main>
+  <!-- hero: the LED board, the hook, the minute -->
+  <section class="hero" id="hero">
+    <div class="ring" aria-hidden="true"></div>
+    <div class="float f-watch" style="left:4%;top:16%;width:clamp(120px,15vw,230px);--bob:7s;--r0:-8deg;--r1:3deg" data-depth="0.6"><img src="/img/sp-watch.webp" alt=""></div>
+    <div class="float hide-m" style="left:-3%;top:56%;width:clamp(160px,20vw,320px);--bob:9s;--blur:blur(5px);--r0:6deg;--r1:-4deg" data-depth="1.2"><img src="/img/sp-hourglass.webp" alt=""></div>
+    <div class="float f-lock" style="right:6%;top:18%;width:clamp(110px,13vw,200px);--bob:8s;--r0:5deg;--r1:-6deg" data-depth="0.8"><img src="/img/sp-lock.webp" alt=""></div>
+    <div class="float hide-m" style="right:-2%;top:60%;width:clamp(150px,17vw,280px);--bob:10s;--blur:blur(6px)" data-depth="1.4"><img src="/img/sp-zero.webp" alt=""></div>
+    <div class="float hide-m" style="left:22%;top:74%;width:clamp(60px,6vw,96px);--bob:6s" data-depth="0.4"><img src="/img/sp-sparkg.webp" alt=""></div>
+    <div class="float hide-m f-sp" style="right:24%;top:12%;width:clamp(50px,5vw,80px);--bob:5s;--blur:blur(2px)" data-depth="0.3"><img src="/img/sp-sparki.webp" alt=""></div>
+    <div class="float hide-m" style="right:21%;top:72%;width:clamp(56px,5.5vw,90px);--bob:7s" data-depth="0.5"><img src="/img/sp-cubeg.webp" alt=""></div>
+    <div class="float hide-m f-cu" style="left:30%;top:9%;width:clamp(40px,4vw,64px);--bob:6s;--blur:blur(3px)" data-depth="0.2"><img src="/img/sp-cubei.webp" alt=""></div>
+    <div class="hero-in">
+      <h1 class="vh">KAIRO. Block 0 is closed.</h1>
+      <div class="hw" id="hwWord"><div class="pn" id="heroName" role="img" aria-label="KAIRO"></div></div>
+      <div class="hw" id="hwCta"><div class="cta"><a class="btn g lg" href="/app">Open the app <span class="ar">→</span></a><a class="btn o lg" href="#open">How it works</a></div></div>
+    </div>
+  </section>
+
+  <div class="marq" aria-hidden="true"><div class="marq-t" id="marq"><span>BLOCK 0 IS CLOSED</span><i></i><span>ONE DEV BUY</span><i></i><span>NO BUNDLES</span><i></i><span>NO SNIPERS</span><i></i><span>EVERY COIN OPENS ON THE MINUTE</span><i></i><span>NOT FIRST. ON TIME.</span><i></i></div></div>
+
+  <!-- 01: the problem, drawn -->
+  <section class="sec" id="problem">
+    <div class="wrap">
+      <div class="head"><div><p class="ey">01 · The problem</p><h2 class="h2 split">Most coins are decided <em>in block 0.</em></h2></div></div>
+      <div class="duo">
+        <div class="card rv"><h3>A bundled launch <span class="pill">BLOCK 0 FOR SALE</span></h3><canvas id="duoA" width="1120" height="660"></canvas>
+          <div class="legend"><span><i style="background:var(--go)"></i>the dev</span><span><i style="background:var(--red)"></i>bundle wallets</span><span><i style="background:var(--amber)"></i>snipers</span><span><i style="background:#8fb7ff"></i>people</span></div>
+          <p>Block 0 fills before anyone can click. People arrive in later blocks and buy what's left.</p></div>
+        <div class="card k rv d1"><h3>A Kairo launch <span class="pill">BLOCK 0 IS CLOSED</span></h3><canvas id="duoB" width="1120" height="660"></canvas>
+          <div class="legend"><span><i style="background:var(--go)"></i>the dev's one buy</span><span><i style="background:var(--amber)"></i>bots, waiting</span><span><i style="background:#8fb7ff"></i>people, waiting</span></div>
+          <p>Block 0 holds one buy. Everyone else waits for the opening second, then lands in the same block.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02: anatomy of a bundle -->
+  <section class="sec alt" id="bundle">
+    <div class="wrap">
+      <div class="head"><div><p class="ey">02 · Anatomy of a bundle</p><h2 class="h2 split">Twenty wallets. <em>One hand.</em></h2></div>
+        <div class="seg2 rv" id="bundleSeg"><button type="button" data-m="normal" class="on">A normal launch</button><button type="button" data-m="kairo">A Kairo launch</button></div></div>
+      <div class="card bundle rv"><canvas id="bundleCv"></canvas>
+        <div class="legend"><span><i style="background:var(--amber)"></i>SOL from one wallet</span><span><i style="background:var(--red)"></i>a bundled buy</span><span><i style="background:var(--go)"></i>the creator's one buy</span></div></div>
+    </div>
+  </section>
+
+  <!-- 03: how a coin opens, pinned -->
+  <section class="open" id="open">
+    <div class="open-pin">
+      <div>
+        <p class="ey">03 · How a coin opens</p>
+        <div class="steps" id="steps">
+          <div class="step on"><span class="n">01 / 04 · CREATE</span><h3>The coin is born with one buy.</h3><p>The creator launches the coin and makes a single buy in the same transaction. That buy is block 0, from one wallet, out in the open.</p></div>
+          <div class="step"><span class="n">02 / 04 · CLOSED</span><h3>Nothing else lands in block 0.</h3><p>No bundle, no sniper, no second wallet. Until the opening, every other buy is turned away, whoever pays the biggest tip.</p></div>
+          <div class="step"><span class="n">03 / 04 · COUNTDOWN</span><h3>The opening second is public.</h3><p>From the moment a coin exists, everyone can see the exact second it opens. Every coin opens on the minute, so the clock is the same for everyone.</p></div>
+          <div class="step"><span class="n">04 / 04 · OPEN</span><h3>At :00, everyone at once.</h3><p>Trading opens for everyone in the same second. Bots don't get a head start, because there's nothing to start before.</p></div>
+        </div>
+        <div class="rail" id="rail"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="viz"><canvas id="openCv"></canvas><span class="tag" id="openTag">SLOT TAPE · BLOCK 0</span></div>
+    </div>
+  </section>
+
+  <!-- 04: the minute -->
+  <section class="sec" id="minute">
+    <div class="float sf hide-m" style="right:3%;top:70px;width:110px;--bob:8s;--r0:-6deg;--r1:5deg" data-par="0.14"><img src="/img/sp-hourglass.webp" alt=""></div>
+    <div class="wrap">
+      <div class="head"><div><p class="ey">04 · The minute</p><h2 class="h2 split">One clock. <em>Everyone on it.</em></h2></div><span class="tagl rv">UTC · live</span></div>
+      <div class="card minute rv">
+        <canvas class="led" id="ledTime" width="2178" height="400" role="img" aria-label="The time in UTC"></canvas>
+        <canvas class="lamps" id="lampsCv" aria-hidden="true"></canvas>
+        <div class="facts" id="facts">
+          <div><b class="num" data-to="1">0</b><span>buy in block 0</span></div>
+          <div><b class="num" data-from="20" data-to="0">20</b><span>bundles in block 0</span></div>
+          <div><b class="num" data-to="60" data-suf="s">0</b><span>longest wait for the opening</span></div>
+          <div><b class="num" data-to="150" data-pre="~">0</b><span>Solana slots a minute</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05: live -->
+  <section class="sec alt" id="live">
+    <div class="wrap">
+      <div class="head"><div><p class="ey">05 · Live</p><h2 class="h2 split">Every new coin, <em>on Kairo's clock.</em></h2></div>
+        <div class="feed rv"><span class="st" id="feedSt"><i></i><b>Waiting</b></span><button class="btn o sm" id="feedRetry" type="button" hidden>Retry ↻</button></div></div>
+      <div class="stats rv">
+        <div><span>Coins born since you opened this</span><b class="num" id="stBorn">0</b></div>
+        <div><span>Buys that would have waited for :00</span><b class="num" id="stHeld">0</b></div>
+        <div><span>Likely block 0 bundles</span><b class="num" id="stB0">0</b></div>
+        <div><span>Coins opened together at the last :00</span><b class="num" id="stOpened">—</b></div>
+      </div>
+      <div class="board rv" id="board">
+        <div class="brow bh"><span>Coin</span><span>Born (UTC)</span><span>Dev buy</span><span>Before :00</span><span>Opens</span><span></span></div>
+        <div class="bempty" id="bEmpty">Waiting for the next coin to be born on pump.fun…</div>
+      </div>
+      <div class="cta-row rv"><a class="btn g" href="/app#live">Open the full board <span class="ar">→</span></a><span class="tagl">Live from pump.fun · read in your browser</span></div>
+    </div>
+  </section>
+
+  <!-- 06: the first candle -->
+  <section class="sec" id="chart">
+    <div class="wrap">
+      <div class="head"><div><p class="ey">06 · The first candle</p><h2 class="h2 split">The first candle <em>tells you who.</em></h2></div><span class="tagl rv">Illustration</span></div>
+      <div class="duo">
+        <div class="card rv"><h3>A bundled launch <span class="pill">CANDLE 1: THE BUNDLE</span></h3><canvas class="chart" id="chartA"></canvas>
+          <p>The first green candle is one hand buying with twenty wallets. The next ones are people buying from them.</p></div>
+        <div class="card k rv d1"><h3>A Kairo launch <span class="pill">CANDLE 1: EVERYONE</span></h3><canvas class="chart" id="chartB"></canvas>
+          <p>No candle until :00. The first one is everyone who came, in the same block.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07: the simulator -->
+  <section class="sec alt" id="sim">
+    <div class="wrap">
+      <div class="head"><div><p class="ey">07 · Try the opening</p><h2 class="h2 split">Same coin. Same buyers. <em>Two launches.</em></h2></div></div>
+      <div class="card sim rv">
+        <div class="sim-top"><span class="tagl"><b>Simulation</b> · not a real coin · every wallet is made up</span><button class="btn g" id="simGo" type="button">Run a test launch <span class="ar">→</span></button></div>
+        <div class="lanes">
+          <div class="lane"><div class="lane-h"><span class="t">A NORMAL LAUNCH</span><span class="num" id="simClockA">BLOCK 0</span></div><canvas id="simA"></canvas><div class="supply"><i class="dv" id="sAd"></i><i class="bt" id="sAb"></i><i class="hm" id="sAh"></i></div><div class="lane-f" id="simFA"><span>Press run to start.</span></div></div>
+          <div class="lane k"><div class="lane-h"><span class="t">A KAIRO LAUNCH</span><span class="num" id="simClockB">BLOCK 0</span></div><canvas id="simB"></canvas><div class="supply"><i class="dv" id="sBd"></i><i class="bt" id="sBb"></i><i class="hm" id="sBh"></i></div><div class="lane-f" id="simFB"><span>Press run to start.</span></div></div>
+        </div>
+        <div class="verdicts">
+          <div class="vd"><span>Supply taken before the first person could buy</span><b class="num" id="vd1">—</b></div>
+          <div class="vd"><span>Bundle and sniper wallets in block 0</span><b class="num" id="vd2">—</b></div>
+          <div class="vd"><span>What people paid next to the bots</span><b class="num" id="vd3">—</b></div>
+        </div>
+              </div>
+    </div>
+  </section>
+
+  <!-- 08: the receipt -->
+  <section class="sec" id="receipt">
+    <div class="float sf hide-m" style="left:2%;bottom:40px;width:96px;--bob:7s;--blur:blur(1.5px)" data-par="0.12"><img src="/img/sp-lock.webp" alt=""></div>
+    <div class="wrap rcpt-wrap">
+      <div><p class="ey">08 · The receipt</p><h2 class="h2 split">Every coin prints <em>its block 0.</em></h2>
+        <div class="cta rv" style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn g" href="/app#launch">Print one for your coin <span class="ar">→</span></a><a class="btn o" href="/docs#receipt">What each line means</a></div></div>
+      <div class="printer"><div class="slot"></div>
+        <div class="paper" id="paper">
+          <span class="spec">SPECIMEN</span>
+          <div class="c big">KAIRO</div><div class="c">OPENING RECEIPT</div><hr>
+          <div class="row"><span>COIN</span><span>YOUR COIN</span></div>
+          <div class="row"><span>VENUE</span><span>SOLANA</span></div><hr>
+          <div class="row"><span>BLOCK 0</span><span>1 BUY</span></div>
+          <div class="row"><span>  BUYER</span><span>THE CREATOR</span></div>
+          <div class="row"><span>  BUNDLES</span><span class="ok">0</span></div>
+          <div class="row"><span>  SNIPES</span><span class="ok">0</span></div><hr>
+          <div class="row"><span>OPENS AT</span><span class="num" id="rcptOpen">--:--:00 UTC</span></div>
+          <div class="row"><span>BEFORE OPEN</span><span class="ok">0 TRADES</span></div>
+          <div class="row"><span>OPENING BLOCK</span><span>EVERYONE</span></div><hr>
+          <div class="c">NOT FIRST. ON TIME.</div>
+          <div class="bars"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09: the scanner -->
+  <section class="sec alt" id="scan">
+    <div class="float sf hide-m" style="right:2%;bottom:50px;width:120px;--bob:9s;--blur:blur(2px)" data-par="0.1"><img src="/img/sp-zero.webp" alt=""></div>
+    <div class="wrap">
+      <div class="head"><div><p class="ey">09 · Block 0 scanner</p><h2 class="h2 split">See any coin's <em>block 0.</em></h2></div><span class="tagl rv">Live · read from Solana</span></div>
+      <div class="card scan rv">
+        <form id="scanForm" autocomplete="off"><label class="field"><input id="scanIn" placeholder="Paste a coin's contract address" spellcheck="false" aria-label="A coin's contract address"><span class="pst" id="scanPaste">PASTE</span></label><button class="btn g lg" type="submit">Scan block 0 <span class="ar">→</span></button></form>
+        <div class="err" id="scanErr" role="status"></div>
+        <div class="scan-out" id="scanOut">
+          <div class="scan-empty">
+            <div><b>BLOCK 0</b>Every wallet that bought in the block the coin was born.</div>
+            <div><b>BUNDLES</b>Wallets funded by the dev, or by one hand, just before they bought.</div>
+            <div><b>BEFORE :00</b>Buys that landed before the next minute, when a Kairo coin would open.</div>
+            <div><b>VERDICT</b>What Kairo would have turned away, and what would have waited.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10: side by side -->
+  <section class="sec" id="vs">
+    <div class="wrap">
+      <div class="head"><div><p class="ey">10 · Side by side</p><h2 class="h2 split">Same coin. <em>Different first block.</em></h2></div></div>
+      <div class="vs" id="vsTable">
+        <div class="vs-row"><div></div><div>A normal launch</div><div>A Kairo launch</div></div>
+        <div class="vs-row"><div>BLOCK 0</div><div>Anyone with a bundle and a tip</div><div><i class="ok">✓</i>One buy: the creator's</div></div>
+        <div class="vs-row"><div>BUNDLES</div><div>Twenty wallets that look like twenty buyers</div><div><i class="ok">✓</i>Can't land in block 0</div></div>
+        <div class="vs-row"><div>SNIPERS</div><div>First by milliseconds</div><div><i class="ok">✓</i>Wait for the opening like everyone</div></div>
+        <div class="vs-row"><div>THE OPENING</div><div>Whenever the first bot lands</div><div><i class="ok">✓</i>On the minute, on a public countdown</div></div>
+        <div class="vs-row"><div>PROOF</div><div>Trust the dev</div><div><i class="ok">✓</i>A receipt you can check on chain</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11: the rules -->
+  <section class="sec alt" id="rules">
+    <div class="wrap">
+      <div class="head"><div><p class="ey">11 · The rules</p><h2 class="h2 split">Three rules. <em>Every coin.</em></h2></div></div>
+      <div class="rules">
+        <div class="rule card rv"><span class="ix">1</span><img src="/img/sp-lock.webp" alt=""><b>Block 0 is one buy.</b><p>The creator's, from the wallet that creates the coin, in the same transaction.</p></div>
+        <div class="rule card rv d1"><span class="ix">2</span><img src="/img/sp-cubeg.webp" alt=""><b>Nothing else lands in block 0.</b><p>No bundles, no second wallets, no snipes, whoever pays the biggest tip.</p></div>
+        <div class="rule card rv d2"><span class="ix">3</span><img src="/img/sp-watch.webp" alt=""><b>Every coin opens on the minute.</b><p>A public countdown to :00, then trading opens for everyone in the same second.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12: laps -->
+  <section class="sec" id="laps">
+    <div class="float sf hide-m" style="right:4%;top:60px;width:64px;--bob:6s" data-par="0.2"><img src="/img/sp-sparki.webp" alt=""></div>
+    <div class="wrap">
+      <div class="head"><div><p class="ey">12 · Laps</p><h2 class="h2 split">Built in the open, <em>lap by lap.</em></h2></div></div>
+      <div class="laps" id="lapsEl"><i class="fill"></i>
+        <div class="lap on rv"><span class="w">LAP 1 · LIVE NOW</span><b>The tools</b><p>The block 0 scanner, the live openings board, the simulator and the receipt printer. Run any launch through Kairo's rules today.</p></div>
+        <div class="lap rv d1"><span class="w">LAP 2 · NEXT</span><b>Launches</b><p>Coins go live on Kairo: one dev buy in block 0, a public countdown, opening on the minute.</p></div>
+        <div class="lap rv d2"><span class="w">LAP 3</span><b>The openings board</b><p>Every coin's next opening, live, with its receipt printed the second it opens.</p></div>
+        <div class="lap rv d3"><span class="w">LAP 4</span><b>$KAIRO</b><p>The coin of the protocol, launched the Kairo way as its own proof.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13: faq -->
+  <section class="sec alt" id="faq">
+    <div class="wrap faq">
+      <div><p class="ey">13 · Questions</p><h2 class="h2 split">The questions <em>worth asking.</em></h2></div>
+      <div>
+        <details class="qa"><summary>Is Kairo live?</summary><p>Partly, and we'd rather say exactly which part. The block 0 scanner, the live openings board, the simulator and the receipt printer work today. Launches open next. Nothing on this site is a live Kairo coin yet.</p></details>
+        <details class="qa"><summary>What is block 0?</summary><p>The block a coin is created in. On most launchpads that block is open to anyone who can get a transaction in, which is how bundles and snipers take the supply before a person can click.</p></details>
+        <details class="qa"><summary>Can the dev still buy?</summary><p>Yes, once. The creator's buy rides in the same transaction that creates the coin. It's the only trade in block 0, and it's printed on the coin's receipt for everyone to see.</p></details>
+        <details class="qa"><summary>Why on the minute?</summary><p>So the opening second is never a secret. Every coin opens at the top of a minute, on a public countdown, and everyone races the same clock.</p></details>
+        <details class="qa"><summary>Can bots still buy at the opening?</summary><p>They can buy, like anyone. What they lose is the head start: no block 0, no buys before :00. Inside the opening block, order is set by the network.</p></details>
+        <details class="qa"><summary>How does the scanner work?</summary><p>It reads a coin's history from Solana: the block it was created in, every buy in that block and the next minute, and where each early wallet got its SOL. Nothing is stored and nothing is signed.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="marq dark" aria-hidden="true"><div class="marq-t" id="marq2"><span>NOT FIRST. ON TIME.</span><i></i><span>ONE BUY IN BLOCK 0</span><i></i><span>OPENS ON THE MINUTE</span><i></i><span>EVERYONE AT ONCE</span><i></i><span>A RECEIPT FOR EVERY COIN</span><i></i></div></div>
+
+  <section class="final" id="final">
+    <div class="float sf" style="left:13%;top:20%;width:clamp(54px,7vw,96px);--bob:6s" data-par="0.22"><img src="/img/sp-cubeg.webp" alt=""></div>
+    <div class="float sf" style="right:12%;top:30%;width:clamp(44px,5.5vw,74px);--bob:7.5s;--blur:blur(2px)" data-par="0.3"><img src="/img/sp-cubei.webp" alt=""></div>
+    <div class="float sf hide-m" style="right:25%;top:12%;width:52px;--bob:5s" data-par="0.4"><img src="/img/sp-sparkg.webp" alt=""></div>
+    <div class="float sf hide-m" style="left:24%;bottom:16%;width:46px;--bob:5.5s;--blur:blur(1px)" data-par="0.36"><img src="/img/sp-sparki.webp" alt=""></div>
+    <img class="k" src="/img/sp-k.webp" alt="" data-par="0.12">
+    <h2 class="split">Not first. <em>On time.</em></h2>
+    <div class="cta"><a class="btn g lg" href="/app">Open the app <span class="ar">→</span></a><a class="btn o lg" href="/docs">Read the docs</a></div>
+    <p class="nextline">Next :00 in <b id="finalNext" data-next>00:--</b></p>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+</body>
+</html>
