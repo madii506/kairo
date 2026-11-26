@@ -3,7 +3,6 @@ import { $, $$, clamp, reduced, mobile } from './util.js';
 import { shell } from './shell.js';
 import { nextOpen, hms, onMoment } from './clock.js';
 import { led } from './led.js';
-import { playIntro } from './intro.js';
 import { duo, openScene, bundle, lamps, candles } from './scenes.js';
 import { mountLive } from './live.js';
 import { mountSim } from './sim.js';
@@ -16,7 +15,6 @@ const html = document.documentElement;
 let lenis = null;
 if (window.Lenis && !reduced) {
   lenis = new window.Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 0.95 });
-  if (html.classList.contains('intro')) lenis.stop();
 }
 const go = el => (lenis ? lenis.scrollTo(el, { offset: el.id === 'open' ? 0 : -4, duration: 1.4 }) : el.scrollIntoView({ behavior: 'smooth' }));
 shell({ onNav: go });
@@ -262,12 +260,7 @@ eys.forEach(e => io.observe(e.el));
 const pio = new IntersectionObserver(([e]) => { if (e.isIntersecting) { $('#paper').classList.add('vis'); pio.disconnect(); } }, { threshold: 0.3 });
 $('.printer') && pio.observe($('.printer'));
 
-// ---------- lights out
-playIntro().then(() => {
-  lenis && lenis.start();
-  requestAnimationFrame(() => {
-    html.classList.remove('hold'); name.assemble(); bg.wave();
-  });
-  const h = location.hash; if (h && /^#[a-z]+$/.test(h)) { const el = $(h); if (el) setTimeout(() => go(el), 300); }
-});
+// ---------- straight to the home page: the name flies in, the buttons rise
+requestAnimationFrame(() => { html.classList.remove('hold'); name.assemble(); bg.wave(); });
+{ const h = location.hash; if (h && /^#[a-z]+$/.test(h)) { const el = $(h); if (el) setTimeout(() => go(el), 300); } }
 if (lenis) { const raf = t => { lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf); }
