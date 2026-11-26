@@ -22,7 +22,7 @@ export function duo(cv, mode) {
     for (let i = 0; i < 14; i++) add('people', 2.0 + i * 0.16 + R() * 0.1, 0.6, { b: 2 + (i % 3), k: Math.floor(i / 3) });
   } else {
     add('dev', 0.35, 0.45, { b: 0, k: 0 });
-    for (let i = 0; i < 8; i++) add('sniper', 0.6 + R() * 0.4, 0.45, { bounce: true, b: 1 + (i % 2), k: Math.floor(i / 2) });
+    for (let i = 0; i < 6; i++) add('sniper', 0.7 + R() * 0.3, 0.35, { flag: true, b: 0, k: 1 + i });
     for (let i = 0; i < 18; i++) add('people', 1.5 + i * 0.11 + R() * 0.1, 0.6, { b: 1 + (i % 4), k: 4 + Math.floor(i / 4) });
   }
   whileVisible(cv, t0 => {
@@ -39,30 +39,24 @@ export function duo(cv, mode) {
       rr(c, x, y, s, s, 8); c.fill(); c.stroke();
       label(c, `BLOCK ${i}`, x, y - 8, isOpen ? C.go : C.dim, Math.max(9, h * 0.032));
     });
-    if (kz && t > 0.3) lock(c, bx0 + s0 - 14, y0 + 16, 18, C.go);
     // where each dot ends up
     const slot = (b, k) => {
       const s = b ? s1 : s0, x = bxs[b], y = b ? y0 + (s0 - s1) : y0, n = b ? 4 : 6, cell = s / (n + 1);
       return [x + cell * (1 + (k % n)), y + cell * (1 + Math.floor(k / n))];
     };
     const r = Math.max(2.5, h * 0.013);
-    let bounced = 0;
+    let flagged = 0;
     for (const p of parts) {
       if (t < p.start) continue;
       const col = p.kind === 'dev' ? C.go : p.kind === 'bundle' ? C.red : p.kind === 'sniper' ? C.amber : C.people;
       let x, y; const sx = -20 - p.sx * 60, sy = h * (0.2 + p.sy * 0.7);
       const [tx, ty] = slot(p.tgt.b, p.tgt.k);
       const k = clamp((t - p.start) / p.dur);
-      if (p.tgt.bounce) {                                                     // they try block 0, bounce off its lock, then buy from block 1 like everyone
-        const ex = bx0 + s0 * (0.3 + 0.5 * p.j), ey = y0 - 6;
-        const back = 1.9 + p.j * 0.6;
-        if (t < p.start + p.dur) { const e = eio(k); x = sx + (ex - sx) * e; y = sy + (ey - sy) * e - Math.sin(e * Math.PI) * h * 0.1; }
-        else if (t < back) { bounced++; const e = clamp((t - p.start - p.dur) / 0.4); x = ex - e * 18; y = ey - e * 26 + e * e * 30; if (e < 1) label(c, 'x', ex + 4, ey - 4, C.red, 12); }
-        else { const e = eio(clamp((t - back) / 0.6)); const bx = ex - 18, by = ey + 4; x = bx + (tx - bx) * e; y = by + (ty - by) * e - Math.sin(e * Math.PI) * h * 0.1; }
-      } else if (mode === 'normal' && (p.kind === 'bundle' || p.kind === 'sniper') && t > 4.6) {   // they sell into the people
+      if (mode === 'normal' && (p.kind === 'bundle' || p.kind === 'sniper') && t > 4.6) {   // they sell into the people
         const k3 = ease(clamp((t - 4.6 - p.j * 0.6) / 0.9)); x = tx + k3 * w * 0.9; y = ty - k3 * h * 0.3;
       } else { const e = eio(k); x = sx + (tx - sx) * e; y = sy + (ty - sy) * e - Math.sin(e * Math.PI) * h * 0.08; }
       c.fillStyle = col; c.beginPath(); c.arc(x, y, r, 0, 6.2832); c.fill();
+      if (p.tgt.flag && k >= 1) { flagged++; c.strokeStyle = C.red; c.lineWidth = 1.5; c.beginPath(); c.arc(x, y, r + 3.5, 0, 6.2832); c.stroke(); }
     }
     // notes
     const fs = Math.max(9, h * 0.034);
@@ -70,8 +64,8 @@ export function duo(cv, mode) {
       if (t > 1.2 && t < 4.6) label(c, 'BLOCK 0: 27 WALLETS', bx0, y0 + s0 + 18, C.red, fs);
       if (t > 4.6) label(c, 'THEY SELL INTO THE PEOPLE', bx0, y0 + s0 + 18, C.red, fs);
     } else {
-      label(c, 'BLOCK 0: 1 BUY', bx0, y0 + s0 + 18, C.go, fs);
-      if (bounced) label(c, 'BOTS REFUSED IN BLOCK 0', bx0, y0 + s0 + 18 + fs * 1.6, C.red, fs);
+      label(c, w < 480 ? 'BLOCK 0: DEV FIRST' : 'BLOCK 0: DEV FIRST, NO BUNDLE', bx0, y0 + s0 + 18, C.go, fs);
+      if (flagged) label(c, `${flagged} SNIPERS · NAMED ON THE RECEIPT`, bx0, y0 + s0 + 18 + fs * 1.6, C.red, fs);
       if (t >= 2.4) label(c, 'FROM BLOCK 1: EVERYONE', bxs[4] + s1, y0 + s0 + 18, C.go, fs, 'right');
     }
     c.globalAlpha = 1;
@@ -92,24 +86,25 @@ export function openScene(cv) {
       c.fillStyle = i > 0 && open ? 'rgba(196,255,120,0.07)' : C.box; c.strokeStyle = i === 0 ? C.go : open ? 'rgba(196,255,120,0.6)' : C.line; c.lineWidth = i === 0 ? 2 : 1.4;
       rr(c, x, y, bw, bw, 10); c.fill(); c.stroke();
       label(c, `BLOCK ${i}`, x, y - 10, i === 0 || open ? C.go : C.dim, Math.max(9, bw * 0.12));
-      if (i === 0 && born) { c.fillStyle = C.go; c.beginPath(); c.arc(x + bw / 2, y + bw / 2, bw * 0.09, 0, 6.2832); c.fill(); lock(c, x + bw - 14, y + 16, 16, C.go); label(c, '1 BUY · THE CREATOR', x, y + bw + 18, C.go, Math.max(9, bw * 0.11)); }
+      if (i === 0 && born) { c.fillStyle = C.go; c.beginPath(); c.arc(x + bw / 2, y + bw / 2, bw * 0.09, 0, 6.2832); c.fill(); label(c, 'FIRST BUY · THE CREATOR', x, y + bw + 18, C.go, Math.max(9, bw * 0.11)); }
       if (i > 0 && !open) lock(c, x + bw / 2, y + bw / 2 + 4, bw * 0.26, C.line2);
     }
     c.globalAlpha = 1;
-    // bots try block 0 and bounce
-    if (p > 0.22 && p < 0.55) {
-      for (let j = 0; j < 7; j++) {
-        const ph = (t * 0.9 + j / 7) % 1, x = x0 + bw * (0.2 + 0.6 * (j / 6)), top = cy - bw / 2;
-        const y = ph < 0.5 ? top - (1 - ph * 2) * h * 0.28 : top - Math.sin((ph - 0.5) * 2 * Math.PI) * h * 0.07;
-        c.fillStyle = C.red; c.globalAlpha = ph < 0.5 ? 1 : 1 - (ph - 0.5) * 1.4; c.beginPath(); c.arc(x, y - 6, 4, 0, 6.2832); c.fill(); c.globalAlpha = 1;
-        if (ph > 0.48 && ph < 0.62) label(c, 'x', x + 6, top - 4, C.red, 12);
-      }
+    // two snipers land in block 0 after the creator: they can't buy first, and they can't hide
+    if (p > 0.24) {
+      const x = x0, y = cy - bw / 2;
+      [[0.26, 0.3, 0.72], [0.33, 0.7, 0.7]].forEach(([at, fx, fy]) => {
+        if (p < at) return; const e = eio(clamp((p - at) / 0.05)), tx = x + bw * fx, ty = y + bw * fy, sy = y - h * 0.3;
+        const yy = sy + (ty - sy) * e; c.fillStyle = C.amber; c.beginPath(); c.arc(tx, yy, 4.5, 0, 6.2832); c.fill();
+        if (e >= 1) { c.strokeStyle = C.red; c.lineWidth = 1.6; c.beginPath(); c.arc(tx, ty, 9, 0, 6.2832); c.stroke(); }
+      });
+      if (p > 0.38) label(c, '2 SNIPERS · NAMED', x, y + bw + 18 + Math.max(9, bw * 0.11) * 1.7, C.red, Math.max(9, bw * 0.11));
     }
-    // the log: the creator's buy goes in, every other block 0 buy bounces
+    // the log: the creator's buy goes in first, inside the create; anyone else in block 0 goes on the receipt
     if (p < 0.5) {
-      const L = [[0.0, 'BLOCK 0', 'CREATE', 'THE COIN', 'OK', C.go], [0.06, 'BLOCK 0', 'BUY', 'THE CREATOR · 2.0%', 'OK', C.go],
-        [0.26, 'BLOCK 0', 'BUY', 'BUNDLE · 20 WALLETS', 'REFUSED', C.red], [0.31, 'BLOCK 0', 'BUY', 'SNIPER · TIP 0.4 SOL', 'REFUSED', C.red],
-        [0.36, 'BLOCK 0', 'BUY', 'SNIPER · TIP 1.2 SOL', 'REFUSED', C.red], [0.41, 'BLOCK 0', 'BUY', 'BUNDLE · 12 WALLETS', 'REFUSED', C.red]];
+      const L = [[0.0, 'BLOCK 0', 'CREATE', 'THE COIN', 'OK', C.go], [0.06, 'BLOCK 0', 'BUY', 'THE CREATOR · 1.7%', 'FIRST', C.go],
+        [0.26, 'BLOCK 0', 'BUY', 'SNIPER · TIP 0.4 SOL', 'NAMED', C.red], [0.33, 'BLOCK 0', 'BUY', 'SNIPER · TIP 1.2 SOL', 'NAMED', C.red],
+        [0.40, 'RECEIPT', 'READ', 'BLOCK 0 · 3 BUYS', 'ON CHAIN', C.amber]];
       const fade = p > 0.45 ? 1 - (p - 0.45) / 0.05 : 1, fs = Math.max(10, Math.min(13, w * 0.017)), lh = fs * 2, lx = w * 0.07, lw = w * 0.86;
       let ly = h * 0.66; c.font = `600 ${fs}px JB, monospace`; c.textBaseline = 'middle';
       for (const [at, sl, op, who, res, col] of L) {
@@ -139,7 +134,7 @@ export function openScene(cv) {
   return { set(p) { P = p; } };
 }
 
-// ---------- anatomy of a bundle: one wallet funds twenty fresh ones, and they all try block 0
+// ---------- anatomy of a bundle: one wallet funds twenty fresh ones, and they all buy in block 0. On Kairo the receipt traces them to the funder
 export function bundle(cv, getMode) {
   const R = rng(21), N = 20, LOOP = 7.2;
   const ws = Array.from({ length: N }, (_, i) => ({ i, d: R() * 0.5, j: R() }));
@@ -160,8 +155,8 @@ export function bundle(cv, getMode) {
     // block 0
     c.fillStyle = kz ? C.box : 'rgba(255,107,94,0.06)'; c.strokeStyle = kz ? C.go : C.red; c.lineWidth = 2; rr(c, bx, by, bs, bs, 12); c.fill(); c.stroke();
     label(c, 'BLOCK 0', bx, by - 10, kz ? C.go : C.red, Math.max(9, h * 0.026));
-    if (kz) { c.fillStyle = C.go; c.beginPath(); c.arc(bx + bs / 2, by + bs / 2, bs * 0.07, 0, 6.2832); c.fill(); lock(c, bx + bs - 18, by + 20, 18, C.go); }
-    let landed = 0, bounced = 0;
+    if (kz) { c.fillStyle = C.go; c.beginPath(); c.arc(bx + bs / 2, by + bs / 2, bs * 0.07, 0, 6.2832); c.fill(); }
+    let landed = 0;
     ws.forEach((wl, k) => {
       const [x, y] = pos(k), fundAt = 0.25 + wl.d * 1.4, buyAt = 2.3 + wl.d * 1.3;
       // the funding line and its SOL
@@ -174,21 +169,18 @@ export function bundle(cv, getMode) {
       // the buy, into block 0 or off its lock
       const bk = clamp((lt - buyAt) / 0.55); if (!funded || bk <= 0) return;
       const tx = bx + bs * (0.2 + 0.6 * ((k % 5) / 4)), ty = by + bs * (0.2 + 0.6 * (Math.floor(k / 5) / 3));
-      if (!kz) {
-        if (bk < 1) { c.fillStyle = C.red; c.beginPath(); c.arc(x + (tx - x) * eio(bk), y + (ty - y) * eio(bk), 3.4, 0, 6.2832); c.fill(); }
-        else { landed++; c.fillStyle = C.red; c.beginPath(); c.arc(tx, ty, Math.max(3, bs * 0.035), 0, 6.2832); c.fill(); }
-      } else {
-        const ex = bx - 6, ey = by + bs * (0.1 + 0.8 * wl.j);
-        if (bk < 0.6) { const e = eio(bk / 0.6); c.fillStyle = C.red; c.beginPath(); c.arc(x + (ex - x) * e, y + (ey - y) * e, 3.4, 0, 6.2832); c.fill(); }
-        else { bounced++; const e = (bk - 0.6) / 0.4; c.globalAlpha = fade * (1 - e); c.fillStyle = C.red; c.beginPath(); c.arc(ex - e * 40, ey + e * 30 * (wl.j - 0.5), 3.4, 0, 6.2832); c.fill(); label(c, 'x', ex + 4, ey + 4, C.red, 12); c.globalAlpha = fade; }
+      if (bk < 1) { c.fillStyle = C.red; c.beginPath(); c.arc(x + (tx - x) * eio(bk), y + (ty - y) * eio(bk), 3.4, 0, 6.2832); c.fill(); }
+      else {
+        landed++; c.fillStyle = C.red; c.beginPath(); c.arc(tx, ty, Math.max(3, bs * 0.035), 0, 6.2832); c.fill();
+        if (kz) { c.strokeStyle = C.red; c.lineWidth = 1.2; c.beginPath(); c.arc(tx, ty, Math.max(3, bs * 0.035) + 3.5, 0, 6.2832); c.stroke(); }
       }
     });
     const fs = Math.max(10, Math.min(13, h * 0.03)), narrow = w < 600;
     const tag = (t, y, col) => { c.font = `700 ${fs}px Silk, monospace`; const tw = c.measureText(t).width; label(c, t, Math.min(w - 6 - tw / 2, Math.max(6 + tw / 2, bx + bs / 2)), y, col, fs, 'center'); };
     if (lt > 1.9) label(c, '20 FRESH WALLETS', (gx0 + gx1) / 2, h * 0.08, C.dim, fs, 'center');
     if (!kz && landed) tag(narrow ? `${landed} WALLETS` : `${landed} WALLETS · ONE HAND`, by + bs + 24, C.red);
-    if (kz && lt > 2.6) tag(narrow ? `${bounced} REFUSED` : `${bounced} REFUSED · CLOSED`, by + bs + 24, C.red);
-    if (kz) tag(narrow ? '1 BUY' : '1 BUY · THE CREATOR', by + bs + 24 + fs * 1.7, C.go);
+    if (kz && landed) tag(narrow ? `${landed} NAMED` : `${landed} WALLETS · ONE FUNDER · NAMED`, by + bs + 24, C.red);
+    if (kz) tag(narrow ? 'DEV FIRST' : 'FIRST BUY · THE CREATOR', by + bs + 24 + fs * 1.7, C.go);
     c.globalAlpha = 1;
   });
   return { restart() { off = lastT; cyc = -1; } };

@@ -93,7 +93,7 @@ if (pcur) {
 
 const open = $('#open'), steps = $$('#steps .step'), rails = $$('#rail i'), tag = $('#openTag');
 const os = openScene($('#openCv'));
-const TAGS = ['BLOCK 0 · THE CREATOR', 'BLOCK 0 · ONE BUY, ALONE', 'BLOCK 0 · BOTS TURNED AWAY', 'BLOCK 1 · OPEN TO EVERYONE'];
+const TAGS = ['BLOCK 0 · THE CREATOR', 'BLOCK 0 · ONE BUY, INSIDE THE CREATE', 'BLOCK 0 · READ BACK, ON THE RECORD', 'BLOCK 1 · OPEN TO EVERYONE'];
 let cur = -1;
 
 function frame(now) {

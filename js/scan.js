@@ -19,7 +19,7 @@ function drawMap(cv, r) {
   c.fillStyle = '#6f776c'; c.textAlign = 'right'; c.fillText(`FIRST ${win} SECONDS`, ex + ew, ey + eh + 18);
 }
 
-const ACT = { dev: ['dev', 'DEV BUY ✓'], refuse: ['refuse', 'TURNED AWAY'], pass: ['pass', 'OPEN ✓'] };
+const ACT = { dev: ['dev', 'DEV BUY ✓'], refuse: ['refuse', 'BLOCK 0 ✗'], pass: ['pass', 'OPEN ✓'] };
 function timeline(r) {
   const rows = (r.timeline || []).map(e => { const [k, label] = ACT[e.action] || ACT.pass; return `<div class="tr"><span>+${Math.max(0, e.t)}s</span><span>${e.slot === 0 ? 'BLOCK 0' : '+' + e.slot}</span><span>${esc(short(e.owner, 6))}${e.owner === r.creator ? ' · dev' : e.bundle ? ' · bundle' : ''}</span><span>${e.side === 'buy' ? 'buy' : 'sell'}</span><span>${pct(e.pct)}</span><span class="a ${k}">${label}</span></div>`; }).join('');
   return `<div class="tl"><div class="tl-wrap"><div class="tr"><span>TIME</span><span>SLOT</span><span>WALLET</span><span>SIDE</span><span>SUPPLY</span><span>KAIRO</span></div>${rows}</div></div>`;
@@ -39,7 +39,7 @@ export function render(out, r, full = false) {
           <div><span>Bundled wallets found</span><b class="num">${r.bundles.reduce((a, b) => a + b.wallets.length, 0)}</b></div>
           <div><span>The dev's buy in block 0</span><b class="num" style="color:var(--go)">${pct(r.block0.devPct)}</b></div>
         </div>
-        <p class="sim-note">${others.length ? `On Kairo, block 0 would have held the dev's buy alone: ${others.length} wallet${others.length === 1 ? '' : 's'} turned away.` : "On Kairo, this block 0 would have passed as it is: the dev's buy alone."} From block 1, everyone buys as usual: ${(r.after && r.after.count) || 0} buy${((r.after && r.after.count) || 0) === 1 ? '' : 's'} in the first minute. ${r.read.partial ? 'Read in part: the public RPC was slow, so this covers what arrived.' : ''}</p>
+        <p class="sim-note">${others.length ? `${others.length} wallet${others.length === 1 ? '' : 's'} bought in block 0 next to the dev. A Kairo receipt names every one of them.` : "Block 0 held the dev's buy alone: a clean receipt."} From block 1, everyone buys as usual: ${(r.after && r.after.count) || 0} buy${((r.after && r.after.count) || 0) === 1 ? '' : 's'} in the first minute. ${r.read.partial ? 'Read in part: the public RPC was slow, so this covers what arrived.' : ''}</p>
         <p class="sim-note"><a href="https://solscan.io/tx/${esc(r.launch.sig)}" target="_blank" rel="noopener" style="color:var(--go)">The launch on Solscan ↗</a></p>
       </div>
       <div class="blockmap"><canvas id="bmap"></canvas>
