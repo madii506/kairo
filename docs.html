@@ -4,26 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KAIRO</title>
-<meta name="description" content="How Kairo works: block 0, the three rules, the opening on the minute, the receipt, the scanner, the live board and the simulator.">
+<meta name="description" content="How Kairo works: the launchpad without block 0. The three rules, how a launch works, the receipt, the scanner and the simulator.">
 <meta name="theme-color" content="#0d0f0d">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/fav-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="/img/fav-64.png">
 <link rel="apple-touch-icon" href="/img/fav-180.png">
 <meta property="og:title" content="KAIRO">
-<meta property="og:description" content="The onchain anti-block-0 protocol. Block 0 is closed.">
+<meta property="og:description" content="The launchpad without block 0. Only the dev buys in block 0, then it's everyone's.">
 <meta property="og:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/kairo.css?v=1">
-<script type="module" src="/js/docs.js?v=1"></script>
+<link rel="stylesheet" href="/css/kairo.css?v=5">
+<script type="module" src="/js/docs.js?v=5"></script>
 </head>
 <body class="docs">
 <div class="prog" id="prog" aria-hidden="true"></div>
-<header class="top" id="top">
-  <div class="clock" id="clock" aria-live="off"><i></i><span class="tz">UTC</span><b class="num" id="clockT">--:--:--</b><span class="ms num" id="clockMs">.000</span><span class="nx num" id="clockNx"><em>next :00</em>00:--</span></div>
-  <nav class="nav" id="nav" aria-label="Site"><a href="/">Home</a><a href="/app#live">Live board</a><a href="/app#scan">Scanner</a><a href="/app#sim">Simulator</a><a href="/docs" class="on">Docs</a></nav>
-  <div class="top-r"><a class="btn g sm" href="/app">Open the app</a><button class="menu" id="menuBtn" aria-label="Open the menu"><span></span></button></div>
+<header class="top bare" id="top">
+  <nav class="nav" id="nav" aria-label="Site">
+    <a href="/">Home</a><a href="/app#launch">Launch</a><a href="/app#scan">Scanner</a><a href="/app#sim">Simulator</a><a href="/#open">How it works</a><a href="#rules">Rules</a><a href="/#faq">FAQ</a><a href="/docs" class="on">Docs</a><a class="go" href="/app#launch">Launch a coin</a>
+  </nav>
+  <button class="menu" id="menuBtn" aria-label="Open the menu"><span></span><b>MENU</b></button>
 </header>
 
 <main class="docm">
@@ -32,38 +33,36 @@
     <a href="#what">What Kairo is</a>
     <a href="#block0">Block 0, explained</a>
     <a href="#rules">The three rules</a>
-    <a href="#opening">How a coin opens</a>
+    <a href="#launching">How a launch works</a>
+    <a href="#form">The launch form</a>
     <a href="#receipt">The receipt</a>
     <a href="#scanner">The block 0 scanner</a>
-    <a href="#board">The openings board</a>
     <a href="#simulator">The simulator</a>
-    <a href="#printer">The receipt printer</a>
     <a href="#laps">Laps</a>
     <a href="#limits">What Kairo can't do</a>
     <a href="#safety">Safety and privacy</a>
   </aside>
 
   <article class="doc">
-    <h1 class="lead-h">Not first. <em>On time.</em></h1>
-    <p class="lead">Kairo is the onchain anti-block-0 protocol. A coin's first block holds one buy, the creator's, and nothing else. Every coin opens for everyone at the same second, on the minute.</p>
+    <h1 class="lead-h">Block 0 is closed. <em>Block 1 is yours.</em></h1>
+    <p class="lead">Kairo is the launchpad without block 0. When a coin launches, the only buy in the block it's born in is the creator's. No bundles, no snipers, no second wallets. From the next block, anyone can buy.</p>
 
     <section id="what">
       <h2><small>01</small>What Kairo is</h2>
-      <p>On most launchpads the first block of a coin decides who owns it. In the same block the coin is created, a dev can buy with twenty wallets in one bundle while sniper bots buy the rest. The chart looks like real demand. By the time a person sees the coin, most of the supply has moved.</p>
-      <p>Kairo takes that block off the table. The creator gets one buy, inside the transaction that creates the coin, out in the open. Nobody else can land in block 0. Then the coin waits for the next full minute and opens for everyone in the same second.</p>
-      <p>The name comes from <i>kairos</i>, the Greek word for the right moment. Kairo isn't about being first. It's about everyone arriving on time.</p>
-      <div class="callout"><p><b>Where things stand.</b> The tools are live today: the block 0 scanner, the openings board, the simulator and the receipt printer. Launches on Kairo come next, in Lap 2. Nothing on this site is a live Kairo coin yet.</p></div>
+      <p>On most launchpads, the first block of a coin decides who owns it. In the same block the coin is created, a dev can buy with twenty wallets in one bundle while sniper bots buy the rest. The chart looks like real demand. By the time a person sees the coin, most of the supply has moved.</p>
+      <p>Kairo takes that block off the table. The creator gets one buy, inside the transaction that creates the coin, out in the open. Nobody else can land in block 0. From block 1, the coin is everyone's, on the same curve.</p>
+      <div class="callout"><p><b>Where things stand.</b> The tools are live today: the block 0 scanner, the simulator and the launch form. Launches on Kairo open next, in Lap 2. There are no Kairo coins yet.</p></div>
     </section>
 
     <section id="block0">
       <h2><small>02</small>Block 0, explained</h2>
-      <p>Solana produces a block roughly every 400 milliseconds. "Block 0" here means the block a coin is created in: the very first moment it exists on chain.</p>
-      <p>A transaction can land in block 0 only if it was ready before anyone could see the coin, which means it came from someone who knew the coin was coming. That's the creator, the creator's other wallets, or a bot watching the creator's wallet and paying a large tip to be first in line.</p>
+      <p>Solana produces a block roughly every 400 milliseconds. "Block 0" means the block a coin is created in: the very first moment it exists on chain.</p>
+      <p>A transaction can land in block 0 only if it was ready before anyone could see the coin. That's the creator, the creator's other wallets, or a bot paying a large tip to be packed in next to the creation.</p>
       <h3>Why it matters</h3>
       <ul>
-        <li><b>Bundles.</b> One person funds many fresh wallets and buys with all of them at once. On the chart it looks like a crowd. It's one hand holding a large share of supply.</li>
-        <li><b>Snipes.</b> Bots buy in the first block or two, before a person can click, and sell into the first real buyers.</li>
-        <li><b>The head start.</b> Whoever is in block 0 buys at the lowest price the coin will ever have. Everyone after them pays more, for less.</li>
+        <li><b>Bundles.</b> One person funds many fresh wallets and buys with all of them at once. On the chart it looks like a crowd. It's one hand holding a large share of the supply.</li>
+        <li><b>Snipes.</b> Bots buy in the creation block, before a person can click, and sell into the first real buyers.</li>
+        <li><b>The price.</b> Whoever is in block 0 buys at the lowest price the coin will ever have. Everyone after them pays more, for less.</li>
       </ul>
     </section>
 
@@ -72,107 +71,101 @@
       <p>Every Kairo coin follows the same three rules. There are no settings, no exceptions and no "trusted" wallets.</p>
       <div class="steps3">
         <div><b>RULE 1</b><span>Block 0 is one buy: the creator's, from the wallet that creates the coin, in the same transaction.</span></div>
-        <div><b>RULE 2</b><span>Nothing else lands in block 0. No bundles, no second wallets, no snipes, whoever pays the biggest tip.</span></div>
-        <div><b>RULE 3</b><span>Every coin opens on the minute. A public countdown to :00 (UTC), then trading opens for everyone in the same second.</span></div>
+        <div><b>RULE 2</b><span>Nothing else lands in block 0. No bundles, no second wallets, no snipers, whoever pays the biggest tip.</span></div>
+        <div><b>RULE 3</b><span>From block 1, anyone can buy. The next block is open to everyone, on the same curve.</span></div>
         <div><b>THE PROOF</b><span>Every coin prints a receipt of its block 0, and every line points to a transaction you can check on Solana.</span></div>
       </div>
     </section>
 
-    <section id="opening">
-      <h2><small>04</small>How a coin opens</h2>
+    <section id="launching">
+      <h2><small>04</small>How a launch works</h2>
       <ol>
-        <li><b>Create.</b> The creator launches the coin and, in the same transaction, makes one buy. That transaction is block 0.</li>
-        <li><b>Closed.</b> From that moment until the opening, every other buy is turned away. Bundles, snipers and second wallets all bounce.</li>
-        <li><b>Countdown.</b> The coin opens at the next full minute, :00 UTC. The second is public from the moment the coin exists, so everyone watches the same clock.</li>
-        <li><b>Open.</b> At :00, trading opens for everyone at once. Buys sent for the opening land in the same block or the next few, and the order inside a block is set by the network, not by who saw the coin first.</li>
+        <li><b>Create.</b> You name the coin, add an image and choose your buy. Kairo builds one transaction that creates the coin and makes your buy, and your wallet signs it.</li>
+        <li><b>Block 0.</b> The coin is born in that transaction, with your buy inside it. That's block 0, and your buy is the only one in it.</li>
+        <li><b>Bounced.</b> Any other buy aimed at block 0 is refused: a bundle, a sniper, a second wallet of yours, whatever tip it pays.</li>
+        <li><b>Open.</b> From block 1, about half a second later, anyone can buy. Everyone buys on the same curve, in the order the network sets.</li>
       </ol>
-      <div class="callout"><p><b>Why the minute?</b> A random opening time would be a secret, and secrets leak to whoever is closest to the creator. A minute boundary is the most public time there is. Nobody can know it earlier than you, because everyone already knows it.</p></div>
+      <div class="callout"><p><b>Why only block 0?</b> Block 0 is the one block nobody outside can see coming. Closing it removes the hidden head start. From block 1, the coin exists in public and everyone can act on it.</p></div>
+    </section>
+
+    <section id="form">
+      <h2><small>05</small>The launch form</h2>
+      <div class="lines">
+        <div><b>IMAGE</b><span>Square, cropped in your browser. It's what people see next to the ticker.</span></div>
+        <div><b>NAME · TICKER</b><span>The coin's name, and the ticker people search for, up to 10 letters and numbers.</span></div>
+        <div><b>DESCRIPTION</b><span>One or two lines about the coin.</span></div>
+        <div><b>LINKS</b><span>X, Telegram and a website, if you have them.</span></div>
+        <div><b>YOUR BUY</b><span>How much of the supply you buy in block 0. It's the only buy there, and it's public.</span></div>
+      </div>
+      <p>Until launches open, the form keeps your draft on your device and prints its receipt, so you can save it or post it. Nothing is created, signed or sent.</p>
     </section>
 
     <section id="receipt">
-      <h2><small>05</small>The receipt</h2>
-      <p>Every Kairo coin carries an opening receipt, printed the second it opens. Here is what each line means.</p>
+      <h2><small>06</small>The receipt</h2>
+      <p>Every Kairo coin carries a launch receipt. Here's what each line means.</p>
       <div class="lines">
         <div><b>COIN · VENUE</b><span>The coin's ticker and the chain it lives on.</span></div>
         <div><b>BLOCK 0</b><span>How many buys landed in the block the coin was born. On Kairo this is always one.</span></div>
         <div><b>BUYER</b><span>Who made that buy. On Kairo it's always the creator, from the wallet that created the coin.</span></div>
         <div><b>SIZE</b><span>How much of the supply the creator's buy took.</span></div>
-        <div><b>BUNDLES · SNIPES</b><span>Wallets that bought with the creator or ahead of the opening. On Kairo both are zero.</span></div>
-        <div><b>OPENS AT</b><span>The exact second trading opened, always on the minute, UTC.</span></div>
-        <div><b>BEFORE OPEN</b><span>Trades between block 0 and the opening. On Kairo this is zero.</span></div>
-        <div><b>OPENING BLOCK</b><span>Who could buy at the opening: everyone.</span></div>
+        <div><b>BUNDLES · SNIPES</b><span>Other wallets that bought in block 0. On Kairo both are zero.</span></div>
+        <div><b>BLOCK 1</b><span>The first block open to everyone.</span></div>
       </div>
-      <p>On a live Kairo coin, each line links to its transaction on Solana, so you check the chain, not our word. The receipt on the home page and in the printer is a specimen or a draft, and says so on its stamp.</p>
+      <p>On a live Kairo coin, each line links to its transaction on Solana, so you check the chain, not our word. The receipts on this site are a specimen or your own draft, and their stamps say so.</p>
     </section>
 
     <section id="scanner">
-      <h2><small>06</small>The block 0 scanner</h2>
-      <p>The scanner reads any Solana coin's launch straight from the chain and replays it through Kairo's rules. It works on pump.fun coins and on most other launches (Raydium, Meteora, PumpSwap and others).</p>
+      <h2><small>07</small>The block 0 scanner</h2>
+      <p>The scanner reads any Solana coin's launch straight from the chain and replays block 0 through Kairo's rules. It works on pump.fun coins and on most other launches (Raydium, Meteora, PumpSwap and others).</p>
       <h3>What it reads</h3>
       <ul>
-        <li><b>The launch block.</b> It walks the coin's history back to its first transaction. For a pump.fun coin the creator comes from the coin's bonding curve; for other launches, trading starts the first time tokens land in a pool, and anything sent before that is reported as a pre-launch allocation.</li>
+        <li><b>The launch block.</b> It walks the coin's history back to its first transaction. For a pump.fun coin the creator comes from the coin's bonding curve. For other launches, trading starts the first time tokens land in a pool, and anything sent before that is reported as a pre-launch allocation.</li>
         <li><b>Block 0.</b> Every wallet that bought in that block. The creator's buy passes; every other wallet would have been turned away.</li>
-        <li><b>Before :00.</b> Every buy after block 0 but before the next full minute. On Kairo those would have waited for the opening.</li>
         <li><b>Bundles.</b> One signer buying for several wallets, or one wallet that sent SOL to several early buyers just before they bought. Exchange hot wallets are ignored, because strangers withdrawing from the same exchange is not a bundle.</li>
+        <li><b>Block 1 onward.</b> The first minute of open trading, for context. Those buys all pass.</li>
       </ul>
       <h3>How to read a verdict</h3>
       <ul>
         <li><b>Red</b>: wallets besides the creator bought in block 0, or got the coin before trading opened. Kairo would have turned them away.</li>
-        <li><b>Amber</b>: block 0 was the creator alone, but buys landed before the next :00. Kairo would have held them for the opening.</li>
-        <li><b>Green</b>: block 0 was the creator alone and nobody bought before the next :00. The launch already played by Kairo's rules.</li>
+        <li><b>Green</b>: block 0 was the creator alone. The launch already played by Kairo's rules.</li>
       </ul>
-      <div class="callout warn"><p><b>Limits.</b> The scanner reads up to 160 pre-opening transactions and checks the funding of up to 24 early wallets. Very busy or very old coins can have too many transactions to walk back in time on a public RPC; the scanner says so instead of guessing. When a read is partial, the result says "read in part".</p></div>
-    </section>
-
-    <section id="board">
-      <h2><small>07</small>The openings board</h2>
-      <p>The openings board in the app shows every new pump.fun coin as it's born, read live in your browser from PumpPortal's public feed. For each coin it shows when it was born, the creator's first buy, every buy that landed before the next :00, and a countdown to the second Kairo would have opened it. At every :00, every coin born in the minute before opens together.</p>
-      <ul>
-        <li><b>BLOCK 0?</b> appears when tokens left the curve in trades the feed never sent before its first trade. That usually means a bundle in block 0. It's a hint, not a verdict: press "Scan block 0" to read the coin's real block 0 from the chain.</li>
-        <li>The numbers at the top count only what happened while the page was open. Close the page and they start again.</li>
-        <li>If the feed goes down, the board says "Feed offline" and offers a retry. It never fills in made-up coins.</li>
-      </ul>
+      <div class="callout warn"><p><b>Limits.</b> The scanner reads up to 160 early transactions and checks the funding of up to 24 early wallets. Very busy or very old coins can have too many transactions to walk back in time on a public RPC; the scanner says so instead of guessing. When a read is partial, the result says "read in part".</p></div>
     </section>
 
     <section id="simulator">
       <h2><small>08</small>The simulator</h2>
-      <p>The simulator launches one made-up coin twice with the same wallets: a dev buying 2% of supply, 20 bundle wallets, 8 snipers and 30 people. In the normal lane, the dev, bundles and snipers all land in block 0 and people arrive over the next blocks. In the Kairo lane, the dev's one buy is block 0 and everyone else lands in the opening block, in an order the network picks.</p>
+      <p>The simulator runs one made-up launch twice with the same wallets: a dev buying 2% of supply, 20 bundle wallets, 8 snipers and 30 people. In the normal lane, the dev, the bundle and the snipers all land in block 0. In the Kairo lane, block 0 holds the dev's buy alone, and everyone else buys from block 1 in the order the network sets.</p>
       <p>Prices follow a simple bonding curve where the price rises with the share of supply already sold:</p>
       <div class="formula">price(s) = 1 + 3s &nbsp;&nbsp;·&nbsp;&nbsp; cost(s₀ → s₁) = (s₁ − s₀) + 1.5 (s₁² − s₀²)</div>
-      <p>The three results under the lanes come from that run and nothing else: the supply taken before the first person could buy, the bundle and sniper wallets in block 0, and what people paid per token next to the bots.</p>
-    </section>
-
-    <section id="printer">
-      <h2><small>09</small>The receipt printer</h2>
-      <p>The receipt printer drafts the receipt your coin would carry on Kairo: the name, the ticker, the size of your one buy and the second it would open. Save it as a PNG or post it. It's a draft: nothing is created, signed or sent, and the stamp says DRAFT.</p>
+      <p>The three results under the lanes come from that run and nothing else: the supply bought in block 0 besides the dev, the wallets in block 0 besides the dev, and what people paid per token next to the bots.</p>
     </section>
 
     <section id="laps">
-      <h2><small>10</small>Laps</h2>
+      <h2><small>09</small>Laps</h2>
       <div class="lines">
-        <div><b>LAP 1 · LIVE NOW</b><span>The tools: the block 0 scanner, the openings board, the simulator and the receipt printer.</span></div>
-        <div><b>LAP 2 · NEXT</b><span>Launches: coins go live on Kairo with one dev buy in block 0, a public countdown and an opening on the minute.</span></div>
-        <div><b>LAP 3</b><span>The openings board for Kairo coins: every coin's next opening, live, with its receipt printed the second it opens.</span></div>
-        <div><b>LAP 4</b><span>$KAIRO: the coin of the protocol, launched the Kairo way as its own proof.</span></div>
+        <div><b>LAP 1 · LIVE NOW</b><span>The tools: the block 0 scanner, the simulator and the launch form.</span></div>
+        <div><b>LAP 2 · NEXT</b><span>Launches: one transaction, your buy alone in block 0, open to everyone from block 1.</span></div>
+        <div><b>LAP 3</b><span>Coin pages: every Kairo coin with its chart, its holders and the receipt of its block 0.</span></div>
+        <div><b>LAP 4</b><span>$KAIRO: the coin of the launchpad, launched on Kairo as its own proof.</span></div>
       </div>
     </section>
 
     <section id="limits">
-      <h2><small>11</small>What Kairo can't do</h2>
+      <h2><small>10</small>What Kairo can't do</h2>
       <ul>
-        <li><b>It can't make bots disappear.</b> Bots can still buy at the opening, like anyone. What they lose is the head start: no block 0, nothing before :00.</li>
-        <li><b>It can't pick the order inside the opening block.</b> The network does. Kairo makes sure that block is open to everyone at once.</li>
-        <li><b>It can't stop someone from using many wallets at the opening.</b> It can stop those wallets from landing in block 0, and the scanner flags shared funders wherever they sit.</li>
-        <li><b>It isn't a promise about price.</b> A fair start is not a good coin. Nothing here is financial advice.</li>
+        <li><b>It can't make bots disappear.</b> From block 1, bots can buy like anyone. What they lose is block 0: no buying in the creation block next to the dev.</li>
+        <li><b>It can't pick the order inside a block.</b> The network does.</li>
+        <li><b>It can't stop someone from buying with many wallets after block 0.</b> It can stop those wallets from landing in block 0, and the scanner flags shared funders wherever they sit.</li>
+        <li><b>It isn't a promise about price.</b> A clean block 0 is not a good coin. Nothing here is financial advice.</li>
       </ul>
     </section>
 
     <section id="safety">
-      <h2><small>12</small>Safety and privacy</h2>
+      <h2><small>11</small>Safety and privacy</h2>
       <ul>
-        <li>The site never asks you to connect a wallet, sign anything or send anything.</li>
+        <li>Until launches open, the site never asks you to connect a wallet, sign anything or send anything.</li>
         <li>The scanner runs on our server and reads only public chain data. Nothing you paste is stored.</li>
-        <li>The openings board connects from your browser to PumpPortal's public feed and nowhere else.</li>
+        <li>Your launch draft stays in your browser.</li>
         <li>No cookies, no analytics, no trackers. Fonts are served from this site.</li>
       </ul>
     </section>
