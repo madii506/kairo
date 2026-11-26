@@ -4,7 +4,7 @@
 //
 // Kairo's rules, as the scan applies them:
 //   1. block 0 is one buy: the creator's. The creator's buys in the launch block pass.
-//   2. nothing else lands in block 0. Every other wallet that bought in the launch block would have been turned away.
+//   2. everyone else in block 0 is named: every other wallet that bought in the launch block is flagged.
 //   3. from block 1, anyone can buy. The first minute after block 0 is read for context and passes untouched.
 //   bundles (one signer buying for several wallets, or one wallet funding several early buyers) are flagged wherever they sit.
 const crypto = require('node:crypto');
@@ -369,9 +369,9 @@ async function scanOnce(mint) {
   const verdict = others.length || prelaunch.length ? 'blocked' : whole ? 'clean' : 'unsure';
   const n = others.length, s = x => (x === 1 ? '' : 's');
   const headline = n
-    ? `${n} wallet${s(n)} bought in block 0 besides the dev. Kairo would have turned ${n === 1 ? 'it' : n === 2 ? 'both' : 'all ' + n} away.`
-    : prelaunch.length ? `${prelaunch.length} wallet${s(prelaunch.length)} got the coin before trading opened. On Kairo, block 0 is the creator's buy and nothing else.`
-    : whole ? "Block 0 held the dev's buy and nothing else. This launch already plays by Kairo's rules."
+    ? `${n} wallet${s(n)} bought in block 0 besides the dev. A Kairo receipt names ${n === 1 ? 'it' : n === 2 ? 'both' : 'all ' + n}.`
+    : prelaunch.length ? `${prelaunch.length} wallet${s(prelaunch.length)} got the coin before trading opened. On Kairo, the creator's buy rides inside the create and the receipt names everyone else.`
+    : whole ? "Block 0 held the dev's buy and nothing else: a clean receipt."
     : `Clean so far: nothing besides the dev in the ${loaded} of ${early.length} early transactions read.`;
   return {
     ok: true, mint, name: meta.name, symbol: meta.symbol, image: meta.image, creator, graduated, venue,

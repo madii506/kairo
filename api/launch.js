@@ -133,8 +133,8 @@ async function build(req) {
   if (!(buySol <= MAX_BUY)) throw new Error(`Your buy can be up to ${MAX_BUY} SOL.`);
 
   const bal = await conn.getBalance(wallet).catch(() => null);
-  const need = buySol + 0.03;
-  if (!dry && bal != null && bal < need * 1e9) throw new Error(`Your wallet needs about ${need.toFixed(3)} SOL for this launch: your buy plus about 0.03 SOL for the coin's accounts and fees. It holds ${(bal / 1e9).toFixed(3)} SOL.`);
+  const need = buySol + 0.026;
+  if (!dry && bal != null && bal < need * 1e9) throw new Error(`Your wallet needs about ${need.toFixed(3)} SOL for this launch: your buy plus about 0.025 SOL for the coin's accounts and fees. It holds ${(bal / 1e9).toFixed(3)} SOL.`);
 
   // the metadata every wallet, explorer and Raydium reads, stored write-once
   const meta = {
@@ -174,7 +174,7 @@ async function build(req) {
   const logs = (sim.value.logs || []).slice(-14);
   if (sim.value.err) {
     const all = (sim.value.logs || []).join('\n'), e = JSON.stringify(sim.value.err);
-    if (/insufficient lamports|insufficient funds|0x1\b|InsufficientFunds/i.test(all + e)) throw Object.assign(new Error(`Your wallet does not hold enough SOL for this launch. You need your buy (${buySol} SOL) plus about 0.03 SOL.`), { logs });
+    if (/insufficient lamports|insufficient funds|0x1\b|InsufficientFunds/i.test(all + e)) throw Object.assign(new Error(`Your wallet does not hold enough SOL for this launch. You need your buy (${buySol} SOL) plus about 0.025 SOL.`), { logs });
     throw Object.assign(new Error('The launch failed when we tried it against Solana, so nothing was sent. ' + (logs.filter(l => /error|failed/i.test(l)).slice(-1)[0] || e).slice(0, 220)), { logs });
   }
   const used = sim.value.unitsConsumed || 300000, units = Math.min(1400000, Math.ceil(used * 1.15) + 20000);
