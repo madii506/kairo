@@ -1,6 +1,5 @@
 // The drawn scenes: two launches side by side, the pinned slot tape that opens a coin, and the hero's running tape.
 import { fit, clamp, ease, eio, rng, whileVisible } from './util.js';
-import { onMoment } from './clock.js';
 
 const C = { go: '#c4ff78', red: '#ff6b5e', amber: '#ffc24d', people: '#8fb7ff', line: '#30372f', line2: '#3b4438', dim: '#6f776c', ink: '#f3f1e7', box: '#151915' };
 function rr(c, x, y, w, h, r) { c.beginPath(); c.roundRect(x, y, w, h, r); }
@@ -23,147 +22,121 @@ export function duo(cv, mode) {
     for (let i = 0; i < 14; i++) add('people', 2.0 + i * 0.16 + R() * 0.1, 0.6, { b: 2 + (i % 3), k: Math.floor(i / 3) });
   } else {
     add('dev', 0.35, 0.45, { b: 0, k: 0 });
-    for (let i = 0; i < 9; i++) add('sniper', 0.6 + R() * 0.5, 0.5, { q: i });
-    for (let i = 0; i < 18; i++) add('people', 0.9 + R() * 1.6, 0.6, { q: 9 + i });
+    for (let i = 0; i < 8; i++) add('sniper', 0.6 + R() * 0.4, 0.45, { bounce: true, b: 1 + (i % 2), k: Math.floor(i / 2) });
+    for (let i = 0; i < 18; i++) add('people', 1.5 + i * 0.11 + R() * 0.1, 0.6, { b: 1 + (i % 4), k: 4 + Math.floor(i / 4) });
   }
   whileVisible(cv, t0 => {
     const [c, w, h] = fit(cv); const t = t0 % LOOP; c.clearRect(0, 0, w, h);
     const fade = t > LOOP - 0.8 ? 1 - (t - (LOOP - 0.8)) / 0.8 : t < 0.25 ? t / 0.25 : 1; c.globalAlpha = fade;
-    const s0 = h * 0.5, s1 = h * 0.3, y0 = h * 0.16, gap = w * 0.025, bx0 = w * 0.04;
+    const s0 = h * 0.5, s1 = h * 0.3, y0 = h * 0.16, gap = w * 0.025, bx0 = w * 0.04, kz = mode === 'kairo';
     const bxs = [bx0, ...slots(w, s1 + gap, 4, bx0 + s0 + gap * 1.6)];
-    const opening = mode === 'kairo' ? 3 : -1, openAt = 3.5;
+    const openAt = 1.4;
     // the blocks
     bxs.forEach((x, i) => {
       const s = i ? s1 : s0, y = i ? y0 + (s0 - s1) : y0;
-      const isOpen = i === opening && t >= openAt;
-      c.fillStyle = isOpen ? 'rgba(196,255,120,0.1)' : C.box; c.strokeStyle = isOpen ? C.go : i === 0 ? C.line2 : C.line; c.lineWidth = isOpen ? 2 : 1.5;
+      const isOpen = kz && i > 0 && t >= openAt;
+      c.fillStyle = isOpen ? 'rgba(196,255,120,0.06)' : C.box; c.strokeStyle = isOpen ? 'rgba(196,255,120,0.55)' : i === 0 ? C.line2 : C.line; c.lineWidth = 1.5;
       rr(c, x, y, s, s, 8); c.fill(); c.stroke();
-      label(c, i === 0 ? 'BLOCK 0' : i === opening ? (t >= openAt ? ':00 OPEN' : ':00') : `BLOCK ${i}`, x, y - 8, isOpen ? C.go : C.dim, Math.max(9, h * 0.032));
-      if (mode === 'kairo' && i > 0 && i < opening && t > 0.4) lock(c, x + s / 2, y + s / 2, s * 0.32, C.line2);
+      label(c, `BLOCK ${i}`, x, y - 8, isOpen ? C.go : C.dim, Math.max(9, h * 0.032));
     });
-    if (mode === 'kairo' && t > 0.3) lock(c, bx0 + s0 - 14, y0 + 16, 18, C.go);
+    if (kz && t > 0.3) lock(c, bx0 + s0 - 14, y0 + 16, 18, C.go);
     // where each dot ends up
     const slot = (b, k) => {
       const s = b ? s1 : s0, x = bxs[b], y = b ? y0 + (s0 - s1) : y0, n = b ? 4 : 6, cell = s / (n + 1);
       return [x + cell * (1 + (k % n)), y + cell * (1 + Math.floor(k / n))];
     };
-    const qx = k => w * 0.08 + (k % 14) * (w * 0.84 / 14), qy = k => h * 0.84 + Math.floor(k / 14) * h * 0.07;
-    const openSlot = k => { const x = bxs[3], y = y0 + (s0 - s1), n = 6, cell = s1 / (n + 1); return [x + cell * (1 + (k % n)), y + cell * (1 + Math.floor(k / n) % 6)]; };
     const r = Math.max(2.5, h * 0.013);
+    let bounced = 0;
     for (const p of parts) {
       if (t < p.start) continue;
       const col = p.kind === 'dev' ? C.go : p.kind === 'bundle' ? C.red : p.kind === 'sniper' ? C.amber : C.people;
       let x, y; const sx = -20 - p.sx * 60, sy = h * (0.2 + p.sy * 0.7);
-      let [tx, ty] = p.tgt.b !== undefined ? slot(p.tgt.b, p.tgt.k) : [qx(p.tgt.q), qy(p.tgt.q)];
+      const [tx, ty] = slot(p.tgt.b, p.tgt.k);
       const k = clamp((t - p.start) / p.dur);
-      if (mode === 'kairo' && p.tgt.q !== undefined && t >= openAt) {          // :00, everyone at once
-        const [ox, oy] = openSlot(p.tgt.q); const k2 = ease(clamp((t - openAt - p.j * 0.08) / 0.55));
-        x = tx + (ox - tx) * k2; y = ty + (oy - ty) * k2 - Math.sin(k2 * Math.PI) * h * 0.12;
+      if (p.tgt.bounce) {                                                     // they try block 0, bounce off its lock, then buy from block 1 like everyone
+        const ex = bx0 + s0 * (0.3 + 0.5 * p.j), ey = y0 - 6;
+        const back = 1.9 + p.j * 0.6;
+        if (t < p.start + p.dur) { const e = eio(k); x = sx + (ex - sx) * e; y = sy + (ey - sy) * e - Math.sin(e * Math.PI) * h * 0.1; }
+        else if (t < back) { bounced++; const e = clamp((t - p.start - p.dur) / 0.4); x = ex - e * 18; y = ey - e * 26 + e * e * 30; if (e < 1) label(c, 'x', ex + 4, ey - 4, C.red, 12); }
+        else { const e = eio(clamp((t - back) / 0.6)); const bx = ex - 18, by = ey + 4; x = bx + (tx - bx) * e; y = by + (ty - by) * e - Math.sin(e * Math.PI) * h * 0.1; }
       } else if (mode === 'normal' && (p.kind === 'bundle' || p.kind === 'sniper') && t > 4.6) {   // they sell into the people
         const k3 = ease(clamp((t - 4.6 - p.j * 0.6) / 0.9)); x = tx + k3 * w * 0.9; y = ty - k3 * h * 0.3;
       } else { const e = eio(k); x = sx + (tx - sx) * e; y = sy + (ty - sy) * e - Math.sin(e * Math.PI) * h * 0.08; }
       c.fillStyle = col; c.beginPath(); c.arc(x, y, r, 0, 6.2832); c.fill();
     }
     // notes
-    if (mode === 'normal') {
-      if (t > 1.2 && t < 4.6) label(c, 'BLOCK 0: 27 WALLETS', bx0, y0 + s0 + 18, C.red, Math.max(9, h * 0.034));
-      if (t > 4.6) label(c, 'THEY SELL INTO THE PEOPLE', bx0, y0 + s0 + 18, C.red, Math.max(9, h * 0.034));
+    const fs = Math.max(9, h * 0.034);
+    if (!kz) {
+      if (t > 1.2 && t < 4.6) label(c, 'BLOCK 0: 27 WALLETS', bx0, y0 + s0 + 18, C.red, fs);
+      if (t > 4.6) label(c, 'THEY SELL INTO THE PEOPLE', bx0, y0 + s0 + 18, C.red, fs);
     } else {
-      label(c, 'BLOCK 0: 1 BUY', bx0, y0 + s0 + 18, C.go, Math.max(9, h * 0.034));
-      if (t > 0.8 && t < openAt) { const left = Math.max(0, Math.ceil(openAt - t)); label(c, `WAITING FOR :00 · 00:0${left}`, w * 0.08, h * 0.79, C.amber, Math.max(9, h * 0.032)); }
-      if (t >= openAt + 0.4) label(c, 'EVERYONE · SAME SECOND', bxs[3] + s1, y0 + s0 + 18, C.go, Math.max(9, h * 0.034), 'right');
+      label(c, 'BLOCK 0: 1 BUY', bx0, y0 + s0 + 18, C.go, fs);
+      if (bounced) label(c, 'BOTS REFUSED IN BLOCK 0', bx0, y0 + s0 + 18 + fs * 1.6, C.red, fs);
+      if (t >= 2.4) label(c, 'FROM BLOCK 1: EVERYONE', bxs[4] + s1, y0 + s0 + 18, C.go, fs, 'right');
     }
     c.globalAlpha = 1;
   });
 }
 
-// ---------- 02: the slot tape, driven by the pinned scroll (p 0..1) and the clock (t)
+// ---------- 03: how a launch works, driven by the pinned scroll (p 0..1)
 export function openScene(cv) {
-  const R = rng(11); const crowd = Array.from({ length: 34 }, (_, i) => ({ kind: i < 8 ? 'bot' : 'p', x: R(), y: R(), j: R() }));
+  const R = rng(11); const crowd = Array.from({ length: 30 }, (_, i) => ({ kind: i < 7 ? 'bot' : 'p', x: R(), y: R(), j: R(), b: 1 + (i % 3) }));
   let P = 0;
   whileVisible(cv, t => {
-    const [c, w, h] = fit(cv); c.clearRect(0, 0, w, h);
-    const p = P, step = Math.min(3, Math.floor(p * 4)), k = p * 4 - step;
-    const bw = Math.min(w * 0.13, h * 0.2), gap = bw * 0.28, cy = h * 0.45;
-    const OPEN = 7, scroll = eio(clamp(p / 0.78)) * (OPEN - 1.2) * (bw + gap);
-    const x0 = w * 0.18 - scroll;
-    for (let i = 0; i < 12; i++) {
-      const x = x0 + i * (bw + gap), y = cy - bw / 2; if (x > w + bw || x < -bw * 2) continue;
-      const open = i === OPEN && p >= 0.76;
-      c.fillStyle = open ? 'rgba(196,255,120,0.12)' : C.box; c.strokeStyle = open ? C.go : i === 0 ? C.go : C.line; c.lineWidth = open || i === 0 ? 2 : 1.4;
+    const [c, w, h] = fit(cv); c.clearRect(0, 0, w, h); if (w < 60) return;
+    const p = P, bw = Math.min(w * 0.15, h * 0.24), gap = bw * 0.32, cy = h * 0.4, x0 = w * 0.08;
+    const N = 5, open = p >= 0.5;
+    for (let i = 0; i < N; i++) {
+      const x = x0 + i * (bw + gap), y = cy - bw / 2, born = i === 0 ? p > 0.02 : open;
+      c.globalAlpha = i === 0 ? 1 : open ? 1 : 0.45;
+      c.fillStyle = i > 0 && open ? 'rgba(196,255,120,0.07)' : C.box; c.strokeStyle = i === 0 ? C.go : open ? 'rgba(196,255,120,0.6)' : C.line; c.lineWidth = i === 0 ? 2 : 1.4;
       rr(c, x, y, bw, bw, 10); c.fill(); c.stroke();
-      label(c, i === 0 ? 'BLOCK 0' : i === OPEN ? ':00' : String(i), x, y - 10, i === 0 || open ? C.go : C.dim, Math.max(9, bw * 0.13));
-      if (i === 0) { c.fillStyle = C.go; c.beginPath(); c.arc(x + bw / 2, y + bw / 2, bw * 0.09, 0, 6.2832); c.fill(); lock(c, x + bw - 14, y + 16, 16, C.go); label(c, '1 BUY', x, y + bw + 18, C.go, Math.max(9, bw * 0.12)); }
-      else if (i < OPEN) lock(c, x + bw / 2, y + bw / 2 + 4, bw * 0.3, C.line2);
+      label(c, `BLOCK ${i}`, x, y - 10, i === 0 || open ? C.go : C.dim, Math.max(9, bw * 0.12));
+      if (i === 0 && born) { c.fillStyle = C.go; c.beginPath(); c.arc(x + bw / 2, y + bw / 2, bw * 0.09, 0, 6.2832); c.fill(); lock(c, x + bw - 14, y + 16, 16, C.go); label(c, '1 BUY · THE CREATOR', x, y + bw + 18, C.go, Math.max(9, bw * 0.11)); }
+      if (i > 0 && !open) lock(c, x + bw / 2, y + bw / 2 + 4, bw * 0.26, C.line2);
     }
-    // bots try the closed blocks and bounce off
-    if (p > 0.22 && p < 0.78) {
+    c.globalAlpha = 1;
+    // bots try block 0 and bounce
+    if (p > 0.22 && p < 0.55) {
       for (let j = 0; j < 7; j++) {
-        const ph = (t * 0.9 + j / 7) % 1, bi = 1 + (j % 5), x = x0 + bi * (bw + gap) + bw / 2 + (j % 2 ? -bw * 0.2 : bw * 0.2);
-        const top = cy - bw / 2, y = ph < 0.5 ? top - (1 - ph * 2) * h * 0.3 : top - Math.sin((ph - 0.5) * 2 * Math.PI) * h * 0.08;
+        const ph = (t * 0.9 + j / 7) % 1, x = x0 + bw * (0.2 + 0.6 * (j / 6)), top = cy - bw / 2;
+        const y = ph < 0.5 ? top - (1 - ph * 2) * h * 0.28 : top - Math.sin((ph - 0.5) * 2 * Math.PI) * h * 0.07;
         c.fillStyle = C.red; c.globalAlpha = ph < 0.5 ? 1 : 1 - (ph - 0.5) * 1.4; c.beginPath(); c.arc(x, y - 6, 4, 0, 6.2832); c.fill(); c.globalAlpha = 1;
         if (ph > 0.48 && ph < 0.62) label(c, 'x', x + 6, top - 4, C.red, 12);
       }
     }
-    // the log under the tape: the creator's buy goes in, every early buy bounces
-    if (p < 0.48) {
-      const L = [[0.0, 'SLOT 0', 'CREATE', 'THE COIN', 'OK', C.go], [0.06, 'SLOT 0', 'BUY', 'THE CREATOR · 2.0%', 'OK', C.go],
-        [0.26, 'SLOT 1', 'BUY', 'BUNDLE · 20 WALLETS', 'REFUSED', C.red], [0.31, 'SLOT 2', 'BUY', 'SNIPER · TIP 0.4 SOL', 'REFUSED', C.red],
-        [0.36, 'SLOT 3', 'BUY', 'SNIPER · TIP 1.2 SOL', 'REFUSED', C.red], [0.41, 'SLOT 4', 'BUY', 'BUNDLE · 12 WALLETS', 'REFUSED', C.red]];
-      const fade = p > 0.43 ? 1 - (p - 0.43) / 0.05 : 1, fs = Math.max(10, Math.min(13, w * 0.017)), lh = fs * 2, lx = w * 0.07, lw = w * 0.86;
-      let ly = h * 0.64; c.font = `600 ${fs}px JB, monospace`; c.textBaseline = 'middle';
+    // the log: the creator's buy goes in, every other block 0 buy bounces
+    if (p < 0.5) {
+      const L = [[0.0, 'BLOCK 0', 'CREATE', 'THE COIN', 'OK', C.go], [0.06, 'BLOCK 0', 'BUY', 'THE CREATOR · 2.0%', 'OK', C.go],
+        [0.26, 'BLOCK 0', 'BUY', 'BUNDLE · 20 WALLETS', 'REFUSED', C.red], [0.31, 'BLOCK 0', 'BUY', 'SNIPER · TIP 0.4 SOL', 'REFUSED', C.red],
+        [0.36, 'BLOCK 0', 'BUY', 'SNIPER · TIP 1.2 SOL', 'REFUSED', C.red], [0.41, 'BLOCK 0', 'BUY', 'BUNDLE · 12 WALLETS', 'REFUSED', C.red]];
+      const fade = p > 0.45 ? 1 - (p - 0.45) / 0.05 : 1, fs = Math.max(10, Math.min(13, w * 0.017)), lh = fs * 2, lx = w * 0.07, lw = w * 0.86;
+      let ly = h * 0.66; c.font = `600 ${fs}px JB, monospace`; c.textBaseline = 'middle';
       for (const [at, sl, op, who, res, col] of L) {
         if (p < at) continue; const a = clamp((p - at) / 0.025) * fade; if (a <= 0) continue;
         c.globalAlpha = a * 0.5; c.strokeStyle = C.line; c.lineWidth = 1; c.beginPath(); c.moveTo(lx, ly + lh / 2); c.lineTo(lx + lw, ly + lh / 2); c.stroke();
-        c.globalAlpha = a; c.textAlign = 'left'; c.fillStyle = C.dim; c.fillText(sl, lx, ly); c.fillStyle = C.ink; c.fillText(op, lx + fs * 6, ly); c.fillText(who, lx + fs * 11.5, ly);
+        c.globalAlpha = a; c.textAlign = 'left'; c.fillStyle = C.dim; c.fillText(sl, lx, ly); c.fillStyle = C.ink; c.fillText(op, lx + fs * 6.5, ly); c.fillText(who, lx + fs * 12, ly);
         c.textAlign = 'right'; c.fillStyle = col; c.fillText(res, lx + lw, ly); ly += lh;
       }
       c.globalAlpha = 1; c.textBaseline = 'alphabetic';
     }
-    // the crowd gathers, then everyone lands in the opening block at once
-    if (p > 0.45) {
-      const ox = x0 + OPEN * (bw + gap), oy = cy - bw / 2, land = clamp((p - 0.76) / 0.12);
-      const gather = ease(clamp((p - 0.45) / 0.2));
+    // from block 1, everyone: the crowd comes in and lands across the open blocks
+    if (p > 0.5) {
+      const land = clamp((p - 0.62) / 0.3), gather = ease(clamp((p - 0.5) / 0.12));
       crowd.forEach((d, i) => {
         const gx = w * 0.1 + d.x * w * 0.8, gy = h * 0.8 + d.y * h * 0.12;
-        const cell = bw / 7, tx = ox + cell * (1 + (i % 6)), ty = oy + cell * (1 + Math.floor(i / 6));
+        const bx = x0 + d.b * (bw + gap), by = cy - bw / 2, cell = bw / 5, k = Math.floor(i / 3);
+        const tx = bx + cell * (1 + (k % 4)), ty = by + cell * (1 + Math.floor(k / 4));
         const sx = d.x < 0.5 ? -20 : w + 20;
         let x = sx + (gx - sx) * gather, y = gy;
-        if (land > 0) { const e = eio(clamp(land * 1.4 - d.j * 0.4)); x = gx + (tx - gx) * e; y = gy + (ty - gy) * e - Math.sin(e * Math.PI) * h * 0.18; }
+        if (land > 0) { const e = eio(clamp(land * 1.5 - d.j * 0.5)); x = gx + (tx - gx) * e; y = gy + (ty - gy) * e - Math.sin(e * Math.PI) * h * 0.16; }
         else y += Math.sin(t * 3 + i) * 2;
         c.fillStyle = d.kind === 'bot' ? C.amber : C.people; c.beginPath(); c.arc(x, y, 3.6, 0, 6.2832); c.fill();
       });
-      if (land <= 0) label(c, 'WAITING FOR :00', w * 0.1, h * 0.77, C.amber, Math.max(9, bw * 0.12));
-      else label(c, 'EVERYONE · SAME SECOND', w * 0.5, h * 0.94, C.go, Math.max(10, bw * 0.14), 'center');
-    }
-    // the countdown
-    if (p > 0.5) {
-      const secs = p < 0.76 ? Math.max(1, 3 - Math.floor(clamp((p - 0.5) / 0.26) * 3)) : 0;
-      const txt = secs ? `00:0${secs}` : 'OPEN';
-      c.font = `700 ${Math.round(bw * 0.42)}px Silk, monospace`; c.textAlign = 'center'; c.fillStyle = secs ? C.amber : C.go;
-      c.shadowColor = c.fillStyle; c.shadowBlur = 16; c.fillText(txt, w * 0.5, h * 0.17); c.shadowBlur = 0;
+      label(c, land > 0.5 ? 'EVERYONE · FROM BLOCK 1' : 'OPEN TO EVERYONE', w * 0.5, h * 0.95, C.go, Math.max(10, bw * 0.12), 'center');
     }
   });
   return { set(p) { P = p; } };
-}
-
-// ---------- the hero's running tape: a block every 400 ms, and at every :00 the opening block goes by
-export function tape(cv) {
-  const marks = []; onMoment(() => marks.push(performance.now()));
-  whileVisible(cv, (t, now) => {
-    const [c, w, h] = fit(cv); c.clearRect(0, 0, w, h);
-    const s = h * 0.62, gap = s * 0.55, step = s + gap, speed = step / 0.4, off = (t * speed) % step, n = Math.ceil(w / step) + 2;
-    const base = Math.floor(t * speed / step);
-    for (let i = -1; i < n; i++) {
-      const x = w - (i * step + off) , y = (h - s) / 2, id = base - i;
-      const hot = marks.some(m => Math.abs(((now - m) / 1000) * speed - (w - x)) < step * 0.5);
-      c.strokeStyle = hot ? C.go : C.line; c.fillStyle = hot ? 'rgba(196,255,120,0.14)' : 'rgba(21,25,21,0.9)'; c.lineWidth = hot ? 2 : 1.2;
-      rr(c, x, y, s, s, 5); c.fill(); c.stroke();
-      const dots = hot ? 9 : (id * 2654435761 >>> 0) % 4;
-      c.fillStyle = hot ? C.go : C.line2;
-      for (let d = 0; d < dots; d++) { c.beginPath(); c.arc(x + s * (0.25 + 0.25 * (d % 3)), y + s * (0.25 + 0.25 * Math.floor(d / 3)), 1.6, 0, 6.2832); c.fill(); }
-    }
-  });
 }
 
 // ---------- anatomy of a bundle: one wallet funds twenty fresh ones, and they all try block 0
@@ -221,33 +194,9 @@ export function bundle(cv, getMode) {
   return { restart() { off = lastT; cyc = -1; } };
 }
 
-// ---------- the minute: sixty lamps, one per second, and every :00 they all go at once
-export function lamps(cv) {
-  whileVisible(cv, () => {
-    const [c, w, h] = fit(cv); c.clearRect(0, 0, w, h); if (w < 60) return;
-    const now = Date.now(), s = (now % 60000) / 1000, sec = Math.floor(s), rowsN = w < 640 ? 2 : 1, per = 60 / rowsN;
-    const gap = w / per, r = Math.min(gap * 0.34, (h - 26) / rowsN * 0.36), flash = s < 1.1 ? 1 - s / 1.1 : 0;
-    for (let i = 0; i < 60; i++) {
-      const col = i % per, row = Math.floor(i / per), x = gap * (col + 0.5), y = (rowsN === 1 ? h * 0.42 : h * (0.26 + row * 0.42));
-      let a = 0.09, fill = C.go;
-      if (i < sec) a = 0.85; else if (i === sec) a = 0.35 + 0.6 * (s - sec);
-      if (flash) { a = Math.max(a, flash); fill = flash > 0.5 ? '#f1ffe0' : C.go; }
-      c.globalAlpha = a; c.fillStyle = fill; c.beginPath(); c.arc(x, y, r, 0, 6.2832); c.fill();
-      if (i === sec && !flash) { c.globalAlpha = 0.25; c.beginPath(); c.arc(x, y, r * 1.9, 0, 6.2832); c.fill(); }
-    }
-    c.globalAlpha = 1;
-    const marks = rowsN === 1 ? [0, 15, 30, 45] : [0, 15];
-    for (const m of marks) for (let row = 0; row < rowsN; row++) {
-      const i = m + row * per; if (i >= 60) continue;
-      const x = gap * ((i % per) + 0.5), y = (rowsN === 1 ? h * 0.42 : h * (0.26 + row * 0.42)) + r + 16;
-      const first = i % per === 0; label(c, ':' + String(i).padStart(2, '0'), first ? x - r : x, y, i === 0 ? C.go : C.dim, 10, first ? 'left' : 'center');
-    }
-  });
-}
-
 // ---------- the chart: the first candle of a bundled launch, and the first candle of a Kairo launch
 export function candles(cv, mode) {
-  const R = rng(mode === 'kairo' ? 17 : 5), N = 28, OPEN = 9, seq = [];
+  const R = rng(mode === 'kairo' ? 17 : 5), N = 28, seq = [];
   let p = 1;
   for (let i = 0; i < N; i++) {
     let o = p, cl, vol;
@@ -260,8 +209,8 @@ export function candles(cv, mode) {
       else if (i === 5) { cl = 1.35; vol = 0.6; }
       else { cl = Math.max(0.75, o + (R() - 0.58) * 0.22); vol = 0.08 + R() * 0.22; }
     } else {
-      if (i < OPEN) { seq.push(null); continue; }                          // closed: no trades at all before :00
-      if (i === OPEN) { o = 1.02; cl = 1.36; vol = 1; }                    // everyone, in the same block
+      if (i === 0) { cl = 1.06; vol = 0.12; }                              // block 0: the creator's one buy
+      else if (i === 1) { cl = 1.42; vol = 0.9; }                          // block 1: everyone who came
       else { cl = Math.max(0.85, o + (R() - 0.47) * 0.2); vol = 0.1 + R() * 0.3; }
     }
     const hi = Math.max(o, cl) + R() * 0.12, lo = Math.min(o, cl) - R() * 0.1;
@@ -275,13 +224,6 @@ export function candles(cv, mode) {
     c.strokeStyle = C.line; c.lineWidth = 1; c.setLineDash([3, 6]);
     for (let k = 1; k < 4; k++) { const y = h * 0.06 + (ph - h * 0.06) * (k / 4); c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); }
     c.setLineDash([]);
-    if (mode === 'kairo') {
-      const xo = cw * OPEN;
-      c.strokeStyle = C.line2; c.setLineDash([5, 5]); c.beginPath(); c.moveTo(0, Y(1.02)); c.lineTo(Math.min(xo, cw * Math.max(shown, 0.5)), Y(1.02)); c.stroke(); c.setLineDash([]);
-      lock(c, xo * 0.45, Y(1.02) - 26, 18, C.line2); label(c, 'CLOSED', xo * 0.45, Y(1.02) + 22, C.dim, 10, 'center');
-      c.strokeStyle = shown > OPEN ? C.go : C.line2; c.lineWidth = 1.5; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(xo, h * 0.04); c.lineTo(xo, h); c.stroke(); c.setLineDash([]);
-      label(c, ':00 OPEN', xo + 6, h * 0.08, shown > OPEN ? C.go : C.dim, 10);
-    }
     for (let i = 0; i < Math.min(shown, N); i++) {
       const k = seq[i]; if (!k) continue;
       const x = cw * (i + 0.5), up = k.c >= k.o, col = up ? C.go : C.red, last = i === shown - 1;
@@ -294,6 +236,7 @@ export function candles(cv, mode) {
     const tagl = (t, x, y, col) => { c.font = '700 10px Silk, monospace'; const tw = c.measureText(t).width; x = Math.min(x, w - tw - 6); c.fillStyle = 'rgba(21,25,21,0.92)'; rr(c, x - 5, y - 12, tw + 10, 17, 4); c.fill(); label(c, t, x, y, col, 10); };
     if (mode === 'normal' && shown > 0) { const x = cw * 0.5, y = Y(seq[0].c); lead(x + cw * 0.4, y + 8, cw * 2.3, y + 8, C.red); tagl('BLOCK 0: THE BUNDLE', cw * 2.5, y + 12, C.red); }
     if (mode === 'normal' && shown > 3 && w > 420) { const x = cw * 3.5, y = Y((seq[3].o + seq[3].c) / 2); lead(x + cw * 0.4, y, cw * 5.3, y, C.red); tagl('THE BUNDLE SELLS', cw * 5.5, y + 4, C.red); }
-    if (mode === 'kairo' && shown > OPEN) { const x = cw * (OPEN + 0.5), y = Y(seq[OPEN].h); lead(x, y - 4, x, Y(2.05), C.go); tagl('EVERYONE AT ONCE', x - cw * 0.3, Y(2.05) - 8, C.go); }
+    if (mode === 'kairo' && shown > 0) { const x = cw * 0.5, y = Y(seq[0].l); lead(x, y + 4, x, Y(0.78), C.go); tagl("BLOCK 0: THE DEV'S BUY", x - cw * 0.3, Y(0.78) + 14, C.go); }
+    if (mode === 'kairo' && shown > 1) { const x = cw * 1.5, y = Y(seq[1].h); lead(x, y - 4, x, Y(2.05), C.go); tagl('BLOCK 1: EVERYONE', x - cw * 0.3, Y(2.05) - 8, C.go); }
   });
 }

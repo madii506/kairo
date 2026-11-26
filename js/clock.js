@@ -11,7 +11,5 @@ export function onMoment(fn) { subs.add(fn); return () => subs.delete(fn); }
 function arm() {
   setTimeout(() => {
     document.body.classList.add('moment'); subs.forEach(f => { try { f(); } catch (e) { } });
-    setTimeout(() => document.body.classList.remove('moment'), 1300); arm();
-  }, toOpen() + 5);
+    setTimeout(() => document.body.classList.remove('moment'), 1300);   }, toOpen() + 5);
 }
-arm();

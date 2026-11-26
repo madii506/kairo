@@ -3,7 +3,7 @@
 import { $, fit, clamp, ease, rng } from './util.js';
 
 const COL = { dev: '#c4ff78', bundle: '#ff6b5e', sniper: '#ffc24d', people: '#8fb7ff' };
-const BLOCKS = 24, OPEN = 12;
+const BLOCKS = 24, OPEN = 1;
 const cost = (s0, s1) => (s1 - s0) + 1.5 * (s1 * s1 - s0 * s0);           // price rises with what's been sold: 1 + 3s
 
 function plan(seed) {
@@ -13,7 +13,8 @@ function plan(seed) {
   for (let i = 0; i < 8; i++) w.push({ g: 'sniper', amt: 0.01 + R() * 0.006 });
   for (let i = 0; i < 30; i++) w.push({ g: 'people', amt: 0.004 + R() * 0.006, at: 3 + Math.floor(R() * 20) });
   const normal = w.map((x, i) => ({ ...x, block: x.g === 'people' ? x.at : 0, ord: x.g === 'dev' ? -1 : x.g === 'people' ? 100 + x.at * 10 + R() : i + R() }));
-  const kairo = w.map(x => ({ ...x, block: x.g === 'dev' ? 0 : OPEN, ord: x.g === 'dev' ? -1 : 1 + R() }));   // inside the opening block, the network sets the order
+  // on Kairo, block 0 is the creator's buy alone. Everyone else buys from block 1, in the order the network sets
+  const kairo = w.map(x => ({ ...x, block: x.g === 'dev' ? 0 : x.g === 'people' ? x.at : x.g === 'bundle' ? 1 : 1 + Math.floor(R() * 2), ord: x.g === 'dev' ? -1 : 1 + R() }));
   for (const lane of [normal, kairo]) {
     lane.sort((a, b) => a.block - b.block || a.ord - b.ord); let s = 0;
     for (const x of lane) { x.p0 = s; s += x.amt; x.price = cost(x.p0, s) / x.amt; }
@@ -35,13 +36,12 @@ export function mountSim() {
       const x = 4 + col * bw + (bw - s) / 2, past = b <= tau, isOpen = lane.key === 'kairo' && b === OPEN;
       c.fillStyle = past ? (isOpen ? 'rgba(196,255,120,0.14)' : '#181c18') : '#121512'; c.strokeStyle = isOpen && past ? '#c4ff78' : b === 0 ? '#3b4438' : '#262b25'; c.lineWidth = isOpen && past ? 2 : 1;
       c.beginPath(); c.roundRect(x, y, s, s, 4); c.fill(); c.stroke();
-      if (lane.key === 'kairo' && b > 0 && b < OPEN) { c.fillStyle = '#2d342b'; c.fillRect(x + s * 0.35, y + s * 0.45, s * 0.3, s * 0.25); c.strokeStyle = '#2d342b'; c.lineWidth = 1.5; c.beginPath(); c.arc(x + s / 2, y + s * 0.45, s * 0.12, Math.PI, 0); c.stroke(); }
       const inb = events.filter(e => e.block === b && e.block <= tau); const n = inb.length; if (!n) continue;
       const per = Math.ceil(Math.sqrt(n)), cell = s / (per + 1);
       inb.forEach((e, i) => { c.fillStyle = COL[e.g]; c.beginPath(); c.arc(x + cell * (1 + (i % per)), y + cell * (1 + Math.floor(i / per)), Math.max(1.4, cell * 0.38), 0, 6.2832); c.fill(); });
     }
     c.font = '700 10px Silk, monospace'; c.fillStyle = '#6f776c'; c.textAlign = 'left'; c.fillText('BLOCK 0', 4 + (bw - s) / 2, y0 - 4);
-    if (lane.key === 'kairo') { const oc = OPEN % per0, orow = Math.floor(OPEN / per0); c.textAlign = 'center'; c.fillStyle = tau >= OPEN ? '#c4ff78' : '#6f776c'; c.fillText(':00', 4 + oc * bw + bw / 2, y0 + orow * (s + 14) - 4); }
+
   }
   function frame(now) {
     const k = clamp((now - run.t0) / 4600), tau = Math.floor(k * (BLOCKS - 0.001));
@@ -49,15 +49,14 @@ export function mountSim() {
       const ev = run.plan[lane.key]; draw(lane, ev, tau);
       const done = ev.filter(e => e.block <= tau), by = g => done.filter(e => e.g === g).reduce((a, e) => a + e.amt, 0) * 100;
       lane.bars[0].style.width = `${by('dev')}%`; lane.bars[1].style.width = `${by('bundle') + by('sniper')}%`; lane.bars[2].style.width = `${by('people')}%`;
-      lane.clock.textContent = lane.key === 'kairo' ? (tau < OPEN ? `BLOCK ${tau} · OPENS AT :00` : `BLOCK ${tau} · OPEN`) : `BLOCK ${tau}`;
+      lane.clock.textContent = lane.key === 'kairo' ? (tau < OPEN ? 'BLOCK 0 · CREATOR ONLY' : `BLOCK ${tau} · OPEN`) : `BLOCK ${tau}`;
       lane.f.innerHTML = `<span>Dev <b>${by('dev').toFixed(1)}%</b></span><span>Bundles + snipers <b>${(by('bundle') + by('sniper')).toFixed(1)}%</b></span><span>People <b>${by('people').toFixed(1)}%</b></span>`;
     }
     if (k < 1) requestAnimationFrame(frame); else finish();
   }
   function finish() {
     const n = run.plan.normal, kz = run.plan.kairo;
-    const firstP = l => Math.min(...l.filter(e => e.g === 'people').map(e => e.block));
-    const before = l => { const fp = firstP(l); return l.filter(e => e.block < fp).reduce((a, e) => a + e.amt, 0) * 100; };
+    const before = l => l.filter(e => e.block === 0 && e.g !== 'dev').reduce((a, e) => a + e.amt, 0) * 100;   // supply bought in block 0 by anyone but the dev
     const b0 = l => l.filter(e => e.block === 0 && e.g !== 'dev').length;
     const ratio = l => avg(l, ['people']) / avg(l, ['bundle', 'sniper']);
     const bn = before(n), bk = before(kz), zn = b0(n), zk = b0(kz), rn = ratio(n), rk = ratio(kz), fmt = r => `${r.toFixed(2)}x`;

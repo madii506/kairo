@@ -1,10 +1,7 @@
 // The home page: lights out, the LED name, the drawn launches, the pinned tape, the simulator, the receipt, the scanner.
 import { $, $$, clamp, reduced, mobile } from './util.js';
 import { shell } from './shell.js';
-import { nextOpen, hms, onMoment } from './clock.js';
-import { led } from './led.js';
-import { duo, openScene, bundle, lamps, candles } from './scenes.js';
-import { mountLive } from './live.js';
+import { duo, openScene, bundle, candles } from './scenes.js';
 import { mountSim } from './sim.js';
 import { mountScan } from './scan.js';
 import { pixname } from './pixname.js';
@@ -70,11 +67,6 @@ const bg = (() => {
 // ---------- the LED name: it lights up after the start lights, follows the pointer, and flickers when you touch it
 const name = pixname($('#heroName'), { reduced });
 $('#heroName').addEventListener('pointerdown', e => { name.burst(e.clientX, e.clientY); bg.wave(e.clientX, e.clientY); });
-document.addEventListener('kairo:second', e => { const rc = $('#rcptOpen'); if (rc) rc.textContent = hms(nextOpen(e.detail.t)) + ' UTC'; });
-onMoment(() => {
-  name.jolt(); bg.wave();
-  const paper = $('#paper'); if (paper && paper.classList.contains('vis') && near(paper)) reprint(paper);
-});
 const near = el => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
 
 // ---------- one frame loop: the floats, the hero, the marquees, the parallax, the pinned tape
@@ -101,7 +93,7 @@ if (pcur) {
 
 const open = $('#open'), steps = $$('#steps .step'), rails = $$('#rail i'), tag = $('#openTag');
 const os = openScene($('#openCv'));
-const TAGS = ['SLOT TAPE · BLOCK 0', 'BLOCK 0 · CLOSED · BOTS TURNED AWAY', 'COUNTDOWN · PUBLIC TO EVERYONE', 'OPEN · EVERYONE AT :00'];
+const TAGS = ['BLOCK 0 · THE CREATOR', 'BLOCK 0 · ONE BUY, ALONE', 'BLOCK 0 · BOTS TURNED AWAY', 'BLOCK 1 · OPEN TO EVERYONE'];
 let cur = -1;
 
 function frame(now) {
@@ -158,30 +150,6 @@ const seg = $('#bundleSeg'); let picked = null;
 const setSeg = m => seg && $$('button', seg).forEach(b => b.classList.toggle('on', b.dataset.m === m));
 const bun = bundle($('#bundleCv'), cyc => { const m = picked || (cyc % 2 ? 'kairo' : 'normal'); setSeg(m); return m; });
 seg && seg.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; picked = b.dataset.m; setSeg(picked); bun.restart(); });
-
-// ---------- 04: the minute: the real UTC time on an LED board, sixty lamps, the facts counting into place
-const ledTime = $('#ledTime') ? led($('#ledTime'), { text: hms(Date.now()), glow: 12 }) : null;
-document.addEventListener('kairo:second', e => ledTime && ledTime.set(hms(e.detail.t)));
-onMoment(() => ledTime && ledTime.flicker(700));
-lamps($('#lampsCv'));
-const facts = $$('#facts b');
-if (facts.length) new IntersectionObserver(([e], o) => {
-  if (!e.isIntersecting) return; o.disconnect(); const t0 = performance.now();
-  const step = now => {
-    const k = reduced ? 1 : Math.min(1, (now - t0) / 1500), ee = 1 - Math.pow(1 - k, 3);
-    facts.forEach(b => { const from = +(b.dataset.from || 0), to = +b.dataset.to; b.textContent = (b.dataset.pre || '') + Math.round(from + (to - from) * ee) + (b.dataset.suf || ''); });
-    if (k < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}, { threshold: 0.4 }).observe($('#facts'));
-
-// ---------- 05: the live board, connected only when you get near it
-const liveSec = $('#live');
-if (liveSec) new IntersectionObserver(([e], o) => {
-  if (!e.isIntersecting) return; o.disconnect();
-  mountLive({ board: $('#board'), empty: $('#bEmpty'), st: $('#feedSt'), retry: $('#feedRetry'),
-    out: { born: $('#stBorn'), held: $('#stHeld'), b0: $('#stB0'), opened: $('#stOpened') }, show: 6, scanHref: m => '/app#scan=' + m });
-}, { rootMargin: '900px 0px' }).observe(liveSec);
 
 // ---------- the simulator starts itself the first time it's seen
 const sim = mountSim();
