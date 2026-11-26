@@ -4,8 +4,8 @@
 //
 // Kairo's rules, as the scan applies them:
 //   1. block 0 is one buy: the creator's. The creator's buys in the launch block pass.
-//   2. nothing else lands in block 0. Every other wallet that bought in the launch block is turned away.
-//   3. every coin opens on the minute. Buys after block 0 but before the next :00 (UTC) would have waited for the opening.
+//   2. nothing else lands in block 0. Every other wallet that bought in the launch block would have been turned away.
+//   3. from block 1, anyone can buy. The first minute after block 0 is read for context and passes untouched.
 //   bundles (one signer buying for several wallets, or one wallet funding several early buyers) are flagged wherever they sit.
 const crypto = require('node:crypto');
 
@@ -301,8 +301,8 @@ async function scanOnce(mint) {
   const pre = new Map();
   for (let k = 0; k < li; k++) { const tx = head[k]; if (!tx || (tx.meta && tx.meta.err)) continue; for (const [o, d] of deltas(tx, mint, isPda)) pre.set(o, (pre.get(o) || 0n) + d); }
   const slot0 = sigs[li].slot, t0 = sigs[li].blockTime;
-  const openAt = t0 != null ? (Math.floor(t0 / 60) + 1) * 60 : null;          // the next :00 after the coin was born
-  const early = sigs.slice(li).filter(s => s.slot === slot0 || (s.blockTime != null && openAt != null && s.blockTime < openAt));
+  const WINDOW = 60;                                                          // block 0, then the first minute after it
+  const early = sigs.slice(li).filter(s => s.slot === slot0 || (s.blockTime != null && t0 != null && s.blockTime - t0 < WINDOW));
   const read = early.slice(0, EARLY_CAP);
   const txs = await many('getTransaction', read.map(s => [s.signature, TXOPT]));
   const loaded = txs.filter(Boolean).length, whole = loaded === early.length;   // a verdict only covers what was actually read
@@ -352,10 +352,10 @@ async function scanOnce(mint) {
     let action = 'pass';
     if (e.owner === creator) {
       if (e.slot === slot0) { devRaw += e.raw; if (e.raw > 0n) action = 'dev'; }      // what the creator holds once block 0 closes
-      else if (e.raw > 0n) { action = 'hold'; }                                     // a second creator buy waits like everyone else
+      else if (e.raw > 0n) { action = 'pass'; }                                     // after block 0 the creator buys like anyone
     } else if (e.raw > 0n) {
       if (e.slot === slot0) { action = 'refuse'; refused++; refusedRaw += e.raw; }
-      else { action = 'hold'; held++; heldRaw += e.raw; heldWallets.add(e.owner); if (before.length < 400) before.push({ t: e.t, owner: e.owner, pct: P(e.raw) }); }
+      else { held++; heldRaw += e.raw; heldWallets.add(e.owner); if (before.length < 400) before.push({ t: e.t, owner: e.owner, pct: P(e.raw) }); }
     }
     if (e.owner === creator && e.raw < 0n && e.sig === read[0].signature) continue;   // the dev seeding a pool is the launch, not a trade
     if (timeline.length < 200) timeline.push({ t: e.t, slot: e.slot - slot0, owner: e.owner, side: e.raw > 0n ? 'buy' : 'sell', pct: P(e.raw < 0n ? -e.raw : e.raw), action, bundle: inCluster.has(e.owner), sig: e.sig });
@@ -366,14 +366,13 @@ async function scanOnce(mint) {
   const buyers = [{ owner: creator, pct: P(devRaw), dev: true }, ...others.sort((a, b) => b.pct - a.pct)];
   const bundled = new Set([...inCluster.keys()]);
 
-  const verdict = others.length || prelaunch.length ? 'blocked' : held ? 'held' : whole ? 'clean' : 'unsure';
+  const verdict = others.length || prelaunch.length ? 'blocked' : whole ? 'clean' : 'unsure';
   const n = others.length, s = x => (x === 1 ? '' : 's');
   const headline = n
     ? `${n} wallet${s(n)} bought in block 0 besides the dev. Kairo would have turned ${n === 1 ? 'it' : n === 2 ? 'both' : 'all ' + n} away.`
     : prelaunch.length ? `${prelaunch.length} wallet${s(prelaunch.length)} got the coin before trading opened. On Kairo, block 0 is the creator's buy and nothing else.`
-    : held ? `Block 0 held the dev's buy and nothing else. ${held} buy${s(held)} before the next :00 would have waited for the opening.`
-    : whole ? "Block 0 held the dev's buy and nothing else, and nobody bought before the next :00. This launch already plays by Kairo's rules."
-    : `Clean so far: nothing to stop in the ${loaded} of ${early.length} pre-opening transactions read.`;
+    : whole ? "Block 0 held the dev's buy and nothing else. This launch already plays by Kairo's rules."
+    : `Clean so far: nothing besides the dev in the ${loaded} of ${early.length} early transactions read.`;
   return {
     ok: true, mint, name: meta.name, symbol: meta.symbol, image: meta.image, creator, graduated, venue,
     program: prog === TOKEN22 ? 'token-2022' : 'token', supply: supply.toString(), decimals: info.decimals,
@@ -382,7 +381,7 @@ async function scanOnce(mint) {
     block0: { buyers, devPct: P(devRaw), otherPct: P(refusedRaw), refused },
     prelaunch,
     bundles: clusters.map(c => ({ kind: c.kind, funder: c.via, wallets: c.wallets, pct: P(c.wallets.reduce((a, o) => a + ((per.get(o) || {}).raw || 0n), 0n)) })),
-    early: { openAt, wait: openAt != null ? openAt - t0 : null, count: held, wallets: heldWallets.size, pct: P(heldRaw), before },
+    after: { window: WINDOW, count: held, wallets: heldWallets.size, pct: P(heldRaw), buys: before },
     totals: { block0Others: n, bundled: bundled.size, held, heldWallets: heldWallets.size },
     timeline,
     read: { early: early.length, read: loaded, partial: !whole || fu.partial, rpc: process.env.RPC_URL ? 'custom' : 'public', ms: Date.now() - T0 },
