@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KAIRO</title>
-<meta name="description" content="How Kairo works: the launchpad without block 0. The three rules, how a launch works, the receipt, the scanner and the simulator.">
+<meta name="description" content="How Kairo works: launches on Raydium LaunchLab with the creator's buy inside the create, the receipt of block 0, the scanner and the simulator.">
 <meta name="theme-color" content="#0d0f0d">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/fav-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="/img/fav-64.png">
 <link rel="apple-touch-icon" href="/img/fav-180.png">
 <meta property="og:title" content="KAIRO">
-<meta property="og:description" content="The launchpad without block 0. Only the dev buys in block 0, then it's everyone's.">
+<meta property="og:description" content="Launch on Raydium with your buy inside the create. Block 0 opens with the dev and goes on the record. Block 1 is yours.">
 <meta property="og:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/kairo.css?v=5">
-<script type="module" src="/js/docs.js?v=5"></script>
+<link rel="stylesheet" href="/css/kairo.css?v=6">
+<script type="module" src="/js/docs.js?v=6"></script>
 </head>
 <body class="docs">
 <div class="prog" id="prog" aria-hidden="true"></div>
@@ -44,14 +44,14 @@
   </aside>
 
   <article class="doc">
-    <h1 class="lead-h">Block 0 is closed. <em>Block 1 is yours.</em></h1>
-    <p class="lead">Kairo is the launchpad without block 0. When a coin launches, the only buy in the block it's born in is the creator's. No bundles, no snipers, no second wallets. From the next block, anyone can buy.</p>
+    <h1 class="lead-h">Block 0, on the record. <em>Block 1 is yours.</em></h1>
+    <p class="lead">Kairo launches Solana coins on Raydium LaunchLab. The creator's buy rides inside the transaction that creates the coin, so block 0 opens with it. Kairo sends no other buy. From the next block, anyone can buy, and every coin prints a receipt of its block 0, read from the chain.</p>
 
     <section id="what">
       <h2><small>01</small>What Kairo is</h2>
       <p>On most launchpads, the first block of a coin decides who owns it. In the same block the coin is created, a dev can buy with twenty wallets in one bundle while sniper bots buy the rest. The chart looks like real demand. By the time a person sees the coin, most of the supply has moved.</p>
-      <p>Kairo takes that block off the table. The creator gets one buy, inside the transaction that creates the coin, out in the open. Nobody else can land in block 0. From block 1, the coin is everyone's, on the same curve.</p>
-      <div class="callout"><p><b>Where things stand.</b> The tools are live today: the block 0 scanner, the simulator and the launch form. Launches on Kairo open next, in Lap 2. There are no Kairo coins yet.</p></div>
+      <p>Kairo puts that block on the record. The creator gets one buy, inside the transaction that creates the coin, out in the open, before anyone else can buy. Kairo adds no bundle. If anyone else lands in block 0 anyway, the coin's receipt names them. From block 1, the coin is everyone's, on the same curve.</p>
+      <div class="callout"><p><b>Where things stand.</b> Launches are live on Raydium LaunchLab, next to the block 0 scanner and the simulator. Every coin launched through Kairo is listed in the app with its receipt.</p></div>
     </section>
 
     <section id="block0">
@@ -68,10 +68,10 @@
 
     <section id="rules">
       <h2><small>03</small>The three rules</h2>
-      <p>Every Kairo coin follows the same three rules. There are no settings, no exceptions and no "trusted" wallets.</p>
+      <p>Every Kairo launch follows the same three rules. There are no settings, no exceptions and no "trusted" wallets.</p>
       <div class="steps3">
-        <div><b>RULE 1</b><span>Block 0 is one buy: the creator's, from the wallet that creates the coin, in the same transaction.</span></div>
-        <div><b>RULE 2</b><span>Nothing else lands in block 0. No bundles, no second wallets, no snipers, whoever pays the biggest tip.</span></div>
+        <div><b>RULE 1</b><span>Block 0 opens with one buy: the creator's, from the wallet that creates the coin, inside the same transaction.</span></div>
+        <div><b>RULE 2</b><span>Kairo sends nothing else. No bundle, no second wallet. If anyone else lands in block 0, the receipt names them.</span></div>
         <div><b>RULE 3</b><span>From block 1, anyone can buy. The next block is open to everyone, on the same curve.</span></div>
         <div><b>THE PROOF</b><span>Every coin prints a receipt of its block 0, and every line points to a transaction you can check on Solana.</span></div>
       </div>
@@ -80,12 +80,12 @@
     <section id="launching">
       <h2><small>04</small>How a launch works</h2>
       <ol>
-        <li><b>Create.</b> You name the coin, add an image and choose your buy. Kairo builds one transaction that creates the coin and makes your buy, and your wallet signs it.</li>
-        <li><b>Block 0.</b> The coin is born in that transaction, with your buy inside it. That's block 0, and your buy is the only one in it.</li>
-        <li><b>Bounced.</b> Any other buy aimed at block 0 is refused: a bundle, a sniper, a second wallet of yours, whatever tip it pays.</li>
+        <li><b>Create.</b> You name the coin, add an image and choose your buy in SOL. Kairo builds one transaction that creates the coin on Raydium LaunchLab and makes your buy, tries it against Solana, and your wallet signs it. The new coin's address signs too: its key is made in your browser and never leaves it.</li>
+        <li><b>Block 0.</b> The coin is born in that transaction, with your buy inside it. Nobody can buy before you, because the coin doesn't exist until your buy is already in it.</li>
+        <li><b>Read back.</b> Once Solana confirms, Kairo reads block 0 back from the chain. Any other wallet that bought in that block (a sniper, a second wallet) is named on the receipt with its share.</li>
         <li><b>Open.</b> From block 1, about half a second later, anyone can buy. Everyone buys on the same curve, in the order the network sets.</li>
       </ol>
-      <div class="callout"><p><b>Why only block 0?</b> Block 0 is the one block nobody outside can see coming. Closing it removes the hidden head start. From block 1, the coin exists in public and everyone can act on it.</p></div>
+      <div class="callout"><p><b>Why block 0?</b> Block 0 is the one block nobody outside can see coming, so it's where hidden wallets take the lowest price. Putting it on the record takes away the hiding place. From block 1, the coin exists in public and everyone can act on it.</p></div>
     </section>
 
     <section id="form">
@@ -95,9 +95,9 @@
         <div><b>NAME · TICKER</b><span>The coin's name, and the ticker people search for, up to 10 letters and numbers.</span></div>
         <div><b>DESCRIPTION</b><span>One or two lines about the coin.</span></div>
         <div><b>LINKS</b><span>X, Telegram and a website, if you have them.</span></div>
-        <div><b>YOUR BUY</b><span>How much of the supply you buy in block 0. It's the only buy there, and it's public.</span></div>
+        <div><b>YOUR BUY</b><span>How much SOL you buy with, up to 5 SOL. It rides inside the create, it's the coin's first trade, and it's public. The form shows about how much of the supply it gets.</span></div>
       </div>
-      <p>Until launches open, the form keeps your draft on your device and prints its receipt, so you can save it or post it. Nothing is created, signed or sent.</p>
+      <p>The form keeps your draft on your device until you launch. A launch costs about 0.025 SOL in network rent and fees, plus your buy. Kairo takes nothing. Every coin launches with a 1B supply: 793.1M on the curve, and it moves to Raydium once the curve raises 85 SOL.</p>
     </section>
 
     <section id="receipt">
@@ -105,13 +105,13 @@
       <p>Every Kairo coin carries a launch receipt. Here's what each line means.</p>
       <div class="lines">
         <div><b>COIN · VENUE</b><span>The coin's ticker and the chain it lives on.</span></div>
-        <div><b>BLOCK 0</b><span>How many buys landed in the block the coin was born. On Kairo this is always one.</span></div>
-        <div><b>BUYER</b><span>Who made that buy. On Kairo it's always the creator, from the wallet that created the coin.</span></div>
+        <div><b>BLOCK 0</b><span>How many buys landed in the block the coin was born. On a clean Kairo launch it's one: the creator's.</span></div>
+        <div><b>BUYER</b><span>Who made the first buy: the creator, from the wallet that created the coin.</span></div>
         <div><b>SIZE</b><span>How much of the supply the creator's buy took.</span></div>
-        <div><b>BUNDLES · SNIPES</b><span>Other wallets that bought in block 0. On Kairo both are zero.</span></div>
+        <div><b>OTHER BUYERS</b><span>Every other wallet that bought in block 0, with its share of the supply. Zero is a clean receipt.</span></div>
         <div><b>BLOCK 1</b><span>The first block open to everyone.</span></div>
       </div>
-      <p>On a live Kairo coin, each line links to its transaction on Solana, so you check the chain, not our word. The receipts on this site are a specimen or your own draft, and their stamps say so.</p>
+      <p>A live receipt is stamped ON CHAIN and links to the launch on Solana, so you check the chain, not our word. Specimens and drafts are stamped as such.</p>
     </section>
 
     <section id="scanner">
@@ -120,21 +120,21 @@
       <h3>What it reads</h3>
       <ul>
         <li><b>The launch block.</b> It walks the coin's history back to its first transaction. For a pump.fun coin the creator comes from the coin's bonding curve. For other launches, trading starts the first time tokens land in a pool, and anything sent before that is reported as a pre-launch allocation.</li>
-        <li><b>Block 0.</b> Every wallet that bought in that block. The creator's buy passes; every other wallet would have been turned away.</li>
+        <li><b>Block 0.</b> Every wallet that bought in that block. The creator's buy passes; every other wallet is flagged.</li>
         <li><b>Bundles.</b> One signer buying for several wallets, or one wallet that sent SOL to several early buyers just before they bought. Exchange hot wallets are ignored, because strangers withdrawing from the same exchange is not a bundle.</li>
         <li><b>Block 1 onward.</b> The first minute of open trading, for context. Those buys all pass.</li>
       </ul>
       <h3>How to read a verdict</h3>
       <ul>
-        <li><b>Red</b>: wallets besides the creator bought in block 0, or got the coin before trading opened. Kairo would have turned them away.</li>
-        <li><b>Green</b>: block 0 was the creator alone. The launch already played by Kairo's rules.</li>
+        <li><b>Red</b>: wallets besides the creator bought in block 0, or got the coin before trading opened.</li>
+        <li><b>Green</b>: block 0 was the creator alone. A clean receipt.</li>
       </ul>
       <div class="callout warn"><p><b>Limits.</b> The scanner reads up to 160 early transactions and checks the funding of up to 24 early wallets. Very busy or very old coins can have too many transactions to walk back in time on a public RPC; the scanner says so instead of guessing. When a read is partial, the result says "read in part".</p></div>
     </section>
 
     <section id="simulator">
       <h2><small>08</small>The simulator</h2>
-      <p>The simulator runs one made-up launch twice with the same wallets: a dev buying 2% of supply, 20 bundle wallets, 8 snipers and 30 people. In the normal lane, the dev, the bundle and the snipers all land in block 0. In the Kairo lane, block 0 holds the dev's buy alone, and everyone else buys from block 1 in the order the network sets.</p>
+      <p>The simulator runs one made-up launch twice with the same wallets: a dev buying 2% of supply, 20 bundle wallets, 8 snipers and 30 people. In the normal lane, the dev, the bundle and the snipers all land in block 0. In the clean lane, block 0 holds the dev's buy alone, the way a clean Kairo receipt reads, and everyone else buys from block 1 in the order the network sets.</p>
       <p>Prices follow a simple bonding curve where the price rises with the share of supply already sold:</p>
       <div class="formula">price(s) = 1 + 3s &nbsp;&nbsp;·&nbsp;&nbsp; cost(s₀ → s₁) = (s₁ − s₀) + 1.5 (s₁² − s₀²)</div>
       <p>The three results under the lanes come from that run and nothing else: the supply bought in block 0 besides the dev, the wallets in block 0 besides the dev, and what people paid per token next to the bots.</p>
@@ -143,8 +143,8 @@
     <section id="laps">
       <h2><small>09</small>Laps</h2>
       <div class="lines">
-        <div><b>LAP 1 · LIVE NOW</b><span>The tools: the block 0 scanner, the simulator and the launch form.</span></div>
-        <div><b>LAP 2 · NEXT</b><span>Launches: one transaction, your buy alone in block 0, open to everyone from block 1.</span></div>
+        <div><b>LAP 1 · LIVE</b><span>The tools: the block 0 scanner and the simulator.</span></div>
+        <div><b>LAP 2 · LIVE NOW</b><span>Launches on Raydium LaunchLab: one transaction, your buy inside the create, a receipt of block 0, open to everyone from block 1.</span></div>
         <div><b>LAP 3</b><span>Coin pages: every Kairo coin with its chart, its holders and the receipt of its block 0.</span></div>
         <div><b>LAP 4</b><span>$KAIRO: the coin of the launchpad, launched on Kairo as its own proof.</span></div>
       </div>
@@ -153,9 +153,9 @@
     <section id="limits">
       <h2><small>10</small>What Kairo can't do</h2>
       <ul>
-        <li><b>It can't make bots disappear.</b> From block 1, bots can buy like anyone. What they lose is block 0: no buying in the creation block next to the dev.</li>
+        <li><b>It can't stop a bot.</b> Raydium LaunchLab has no way to close a block, so a sniper can still buy in block 0, next to the creator. What it can't do is buy before the creator, or hide: the receipt names it.</li>
         <li><b>It can't pick the order inside a block.</b> The network does.</li>
-        <li><b>It can't stop someone from buying with many wallets after block 0.</b> It can stop those wallets from landing in block 0, and the scanner flags shared funders wherever they sit.</li>
+        <li><b>It can't stop someone from buying with many wallets.</b> Kairo never builds a bundle, and the scanner flags wallets with a shared funder wherever they sit.</li>
         <li><b>It isn't a promise about price.</b> A clean block 0 is not a good coin. Nothing here is financial advice.</li>
       </ul>
     </section>
@@ -163,9 +163,9 @@
     <section id="safety">
       <h2><small>11</small>Safety and privacy</h2>
       <ul>
-        <li>Until launches open, the site never asks you to connect a wallet, sign anything or send anything.</li>
+        <li>The site asks your wallet to sign one thing: the launch you build, after it was tried against Solana. It never asks for your recovery phrase.</li><li>The new coin's key is made in your browser, signs once and never leaves the page. The server stores the coin's image and metadata; it never holds a key or your SOL.</li>
         <li>The scanner runs on our server and reads only public chain data. Nothing you paste is stored.</li>
-        <li>Your launch draft stays in your browser.</li>
+        <li>Your draft stays in your browser until you launch.</li>
         <li>No cookies, no analytics, no trackers. Fonts are served from this site.</li>
       </ul>
     </section>

@@ -4,26 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KAIRO</title>
-<meta name="description" content="Launch a coin on Kairo: your buy is the only one in block 0, then it's open to everyone. Scan any coin's block 0 and run the launch simulator.">
+<meta name="description" content="Launch a coin on Kairo: one transaction creates it on Raydium with your buy inside, so block 0 opens with you. Every launch prints a receipt of its block 0, read from Solana.">
 <meta name="theme-color" content="#0d0f0d">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/fav-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="/img/fav-64.png">
 <link rel="apple-touch-icon" href="/img/fav-180.png">
 <meta property="og:title" content="KAIRO">
-<meta property="og:description" content="The launchpad without block 0. Only the dev buys in block 0, then it's everyone's.">
+<meta property="og:description" content="Block 0 opens with the creator's buy, inside the create. From block 1, it's everyone's. Every launch prints its block 0 receipt.">
 <meta property="og:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/silk.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/kairo.css?v=5">
-<script type="module" src="/js/app.js?v=5"></script>
+<link rel="stylesheet" href="/css/kairo.css?v=6">
+<script type="module" src="/js/app.js?v=6"></script>
 </head>
 <body class="app">
 <div class="prog" id="prog" aria-hidden="true"></div>
 <header class="top bare solid" id="top">
   <nav class="nav" id="nav" aria-label="Kairo">
-    <a href="/">Home</a><a href="#launch" data-tab="launch">Launch</a><a href="#scan" data-tab="scan">Scanner</a><a href="#sim" data-tab="sim">Simulator</a><a href="/#open">How it works</a><a href="/docs#rules">Rules</a><a href="/#faq">FAQ</a><a href="/docs">Docs</a><a class="go" href="#launch" data-tab="launch">Launch a coin</a>
+    <a href="/">Home</a><a href="#launch" data-tab="launch">Launch</a><a href="#coins" data-tab="coins">Coins</a><a href="#scan" data-tab="scan">Scanner</a><a href="#sim" data-tab="sim">Simulator</a><a href="/#open">How it works</a><a href="/docs#rules">Rules</a><a href="/#faq">FAQ</a><a href="/docs">Docs</a><a class="go" href="#launch" data-tab="launch">Launch a coin</a>
   </nav>
   <button class="menu" id="menuBtn" aria-label="Open the menu"><span></span><b>MENU</b></button>
 </header>
@@ -32,18 +32,19 @@
   <div class="app-head">
     <div>
       <p class="ey">Kairo app</p>
-      <h1 class="app-h">Launch a coin. <em>Block 0 is yours alone.</em></h1>
+      <h1 class="app-h">Launch a coin. <em>Block 0 opens with you.</em></h1>
     </div>
   </div>
-  <div class="tabs t3" role="tablist">
+  <div class="tabs" role="tablist">
     <button class="tab" role="tab" data-tab="launch"><b>01</b>Launch</button>
-    <button class="tab" role="tab" data-tab="scan"><b>02</b>Scanner</button>
-    <button class="tab" role="tab" data-tab="sim"><b>03</b>Simulator</button>
+    <button class="tab" role="tab" data-tab="coins"><b>02</b>Coins</button>
+    <button class="tab" role="tab" data-tab="scan"><b>03</b>Scanner</button>
+    <button class="tab" role="tab" data-tab="sim"><b>04</b>Simulator</button>
   </div>
 
   <!-- 01: launch -->
   <section class="panel" id="p-launch" data-panel="launch">
-    <div class="ph"><div><h2>Launch on Kairo</h2><p>One transaction creates your coin and makes your buy. Nothing else can land in block 0. From block 1, anyone can buy.</p></div></div>
+    <div class="ph"><div><h2>Launch on Kairo</h2><p>One transaction creates your coin on Raydium LaunchLab and makes your buy inside it, so the coin is born with your buy. From the next block, anyone can buy. Every launch prints a receipt of its block 0, read from Solana.</p></div><button class="wbtn" id="wBtn" type="button">Connect wallet</button></div>
     <div class="launch">
       <form class="card lform" id="lform" autocomplete="off" novalidate>
         <label class="drop" id="lDrop"><input type="file" id="lImg" accept="image/*"><span class="dz"><b>Add an image</b>Drop it here or tap to choose. It's cropped square in your browser.</span></label>
@@ -57,13 +58,23 @@
           <label class="pf"><span>Telegram</span><input id="lTg" maxlength="80" placeholder="t.me/…"></label>
           <label class="pf"><span>Website</span><input id="lWeb" maxlength="80" placeholder="https://…"></label>
         </div>
-        <label class="pf"><span>Your buy in block 0 <b class="num" id="lBuyV">1.0%</b></span><input id="lBuy" type="range" min="0" max="5" step="0.1" value="1"></label>
+        <label class="pf"><span>Your buy, inside the create <b class="num" id="lBuyV">0.5 SOL</b></span><input id="lBuy" type="range" min="0" max="5" step="0.05" value="0.5"></label>
         <ol class="lsteps">
-          <li><b>One transaction.</b> It creates the coin and makes your buy, signed by your wallet.</li>
-          <li><b>Block 0 is yours.</b> No bundle, no sniper, no second wallet lands next to you.</li>
+          <li><b>One transaction.</b> It creates the coin on Raydium and makes your buy. Your wallet signs it.</li>
+          <li><b>Block 0 opens with you.</b> Your buy is inside the create, so nobody can buy before you. Kairo sends no other buy: no bundle, no second wallet.</li>
           <li><b>Block 1 is everyone's.</b> From the next block, anyone can buy on the same curve.</li>
+          <li><b>The receipt.</b> Kairo reads block 0 back from Solana and prints who bought in it. Anyone else who landed there is named.</li>
         </ol>
-        <div class="prow"><button class="btn g lg" type="submit">Launch <span class="ar">→</span></button><button class="btn o" id="lPng" type="button">Save receipt</button><a class="btn o" id="lPost" target="_blank" rel="noopener">Post on X</a><button class="btn o" id="lReset" type="button">Clear</button></div>
+        <p class="lcost" id="lCost"></p>
+        <div class="prow"><button class="btn g lg" type="submit" id="lGo">Launch <span class="ar">→</span></button><button class="btn o" id="lPng" type="button">Save receipt</button><a class="btn o" id="lPost" target="_blank" rel="noopener">Post on X</a><button class="btn o" id="lReset" type="button">Clear</button></div>
+        <ol class="lflow" id="lFlow" hidden>
+          <li data-k="img"><b>Image stored</b><small></small></li>
+          <li data-k="build"><b>Launch built and tried against Solana</b><small></small></li>
+          <li data-k="sign"><b>Signed in your wallet</b><small></small></li>
+          <li data-k="send"><b>Sent to Solana</b><small></small></li>
+          <li data-k="land"><b>Born in block 0</b><small></small></li>
+          <li data-k="read"><b>Block 0 read back</b><small></small></li>
+        </ol>
         <div class="lstatus" id="lStatus" role="status" hidden></div>
       </form>
       <div class="lprev">
@@ -71,31 +82,24 @@
           <div class="cpic" id="cPic"><span>K</span></div>
           <div class="cmeta"><b id="cTick">$TICKER</b><span id="cName">Your coin</span></div>
           <p id="cDesc">Your description shows here.</p>
-          <div class="cchips"><span class="g">BLOCK 0 · 1 BUY · <i id="cBuy">1.0%</i></span><span>BUNDLES · 0</span><span>BLOCK 1 · OPEN</span></div>
+          <div class="cchips"><span class="g">BLOCK 0 · YOUR BUY · <i id="cBuy">0.5 SOL</i></span><span>RAYDIUM</span><span>BLOCK 1 · OPEN</span></div>
         </div>
         <div class="printer big"><div class="slot"></div>
-          <div class="paper vis" id="pPaper">
-            <span class="spec">DRAFT</span>
-            <div class="c big">KAIRO</div><div class="c">LAUNCH RECEIPT</div><hr>
-            <div class="row"><span>COIN</span><span id="rCoin">YOUR TICKER</span></div>
-            <div class="row"><span>NAME</span><span id="rName">YOUR COIN</span></div>
-            <div class="row"><span>VENUE</span><span>SOLANA</span></div><hr>
-            <div class="row"><span>BLOCK 0</span><span>1 BUY</span></div>
-            <div class="row"><span>BUYER</span><span>THE CREATOR</span></div>
-            <div class="row"><span>SIZE</span><span id="rBuy">1.0% OF SUPPLY</span></div>
-            <div class="row"><span>BUNDLES</span><span class="ok">0</span></div>
-            <div class="row"><span>SNIPES</span><span class="ok">0</span></div><hr>
-            <div class="row"><span>BLOCK 1</span><span class="ok">OPEN</span></div>
-            <div class="row"><span>WHO CAN BUY</span><span>EVERYONE</span></div><hr>
-            <div class="c">BLOCK 0 IS CLOSED.</div>
-            <div class="bars"></div>
-          </div>
+          <div class="paper vis" id="pPaper"></div>
         </div>
+        <div class="ldone" id="lDone" hidden></div>
       </div>
     </div>
   </section>
 
-  <!-- 02: the scanner -->
+  <!-- 02: coins launched on Kairo -->
+  <section class="panel" id="p-coins" data-panel="coins" hidden>
+    <div class="ph"><div><h2>Coins on Kairo</h2><p>Every coin launched through Kairo, read from Solana. Each one carries the receipt of its block 0: who bought in the block it was born.</p></div><span class="tagl">Live · read from Solana</span></div>
+    <div class="rview" id="rView" hidden></div>
+    <div class="coins" id="coinList"><div class="cempty"><b>Reading the chain…</b></div></div>
+  </section>
+
+  <!-- 03: the scanner -->
   <section class="panel" id="p-scan" data-panel="scan" hidden>
     <div class="ph"><div><h2>Block 0 scanner</h2><p>Paste any Solana coin. Kairo walks back to the block it was born in and shows who bought there besides the dev, who funded them, and how trading went from block 1.</p></div><span class="tagl">Live · read from Solana</span></div>
     <div class="card scan">
@@ -106,20 +110,20 @@
           <div><b>BLOCK 0</b>Every wallet that bought in the block the coin was born.</div>
           <div><b>BUNDLES</b>Wallets funded by the dev, or by one hand, just before they bought.</div>
           <div><b>THE DEV</b>How much the creator bought in block 0.</div>
-          <div><b>VERDICT</b>What Kairo would have turned away in block 0.</div>
+          <div><b>VERDICT</b>Whether block 0 held the creator alone.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 03: the simulator -->
+  <!-- 04: the simulator -->
   <section class="panel" id="p-sim" data-panel="sim" hidden>
-    <div class="ph"><div><h2>Two launches, one crowd</h2><p>The same launch run twice with the same wallets: once the usual way, once the Kairo way, where block 0 holds the dev's buy alone.</p></div></div>
+    <div class="ph"><div><h2>Two launches, one crowd</h2><p>The same launch run twice with the same wallets: once bundled, once with a clean block 0 that holds the dev's buy alone, the way a clean Kairo receipt reads.</p></div></div>
     <div class="card sim">
       <div class="sim-top"><span class="tagl"><b>Simulation</b> · every wallet is made up</span><button class="btn g" id="simGo" type="button">Run it <span class="ar">→</span></button></div>
       <div class="lanes">
         <div class="lane"><div class="lane-h"><span class="t">A NORMAL LAUNCH</span><span class="num" id="simClockA">BLOCK 0</span></div><canvas id="simA"></canvas><div class="supply"><i class="dv" id="sAd"></i><i class="bt" id="sAb"></i><i class="hm" id="sAh"></i></div><div class="lane-f" id="simFA"><span>Press run to start.</span></div></div>
-        <div class="lane k"><div class="lane-h"><span class="t">A KAIRO LAUNCH</span><span class="num" id="simClockB">BLOCK 0</span></div><canvas id="simB"></canvas><div class="supply"><i class="dv" id="sBd"></i><i class="bt" id="sBb"></i><i class="hm" id="sBh"></i></div><div class="lane-f" id="simFB"><span>Press run to start.</span></div></div>
+        <div class="lane k"><div class="lane-h"><span class="t">A CLEAN BLOCK 0</span><span class="num" id="simClockB">BLOCK 0</span></div><canvas id="simB"></canvas><div class="supply"><i class="dv" id="sBd"></i><i class="bt" id="sBb"></i><i class="hm" id="sBh"></i></div><div class="lane-f" id="simFB"><span>Press run to start.</span></div></div>
       </div>
       <div class="verdicts">
         <div class="vd"><span>Supply bought in block 0 besides the dev</span><b class="num" id="vd1">—</b></div>
@@ -129,6 +133,7 @@
     </div>
   </section>
 </main>
+<div class="wmodal" id="wModal" hidden><div class="wbox" role="dialog" aria-modal="true" aria-labelledby="wTitle"><div class="whead"><b id="wTitle">Connect a wallet</b><button class="wx" id="wClose" type="button" aria-label="Close">✕</button></div><div class="wlist" id="wList"></div><p class="wnote">Kairo asks your wallet for one thing: to sign the launch you build. It never asks for your recovery phrase.</p></div></div>
 <div class="toast" id="toast" role="status"></div>
 </body>
 </html>

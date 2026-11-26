@@ -4,22 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KAIRO</title>
-<meta name="description" content="KAIRO is the launchpad without block 0. Only the dev's buy lands in block 0: no bundles, no snipers. From block 1, anyone can buy.">
+<meta name="description" content="KAIRO launches Solana coins on Raydium LaunchLab with the creator's buy inside the transaction that creates the coin. Every coin prints a receipt of its block 0, read from the chain.">
 <meta name="theme-color" content="#0d0f0d">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/fav-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="/img/fav-64.png">
 <link rel="apple-touch-icon" href="/img/fav-180.png">
 <meta property="og:title" content="KAIRO">
-<meta property="og:description" content="The launchpad without block 0. Only the dev buys in block 0, then it's everyone's.">
+<meta property="og:description" content="Launch on Raydium with your buy inside the create. Block 0 opens with the dev and goes on the record. Block 1 is yours.">
 <meta property="og:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:image" content="https://kairo-five-iota.vercel.app/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/silk.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/kairo.css?v=5">
+<link rel="stylesheet" href="/css/kairo.css?v=6">
 <script src="/js/pre.js?v=2"></script>
 <script src="/vendor/lenis.min.js" defer></script>
-<script type="module" src="/js/home.js?v=6"></script>
+<script type="module" src="/js/home.js?v=7"></script>
 </head>
 <body class="home">
 <canvas id="bgDots" aria-hidden="true"></canvas>
@@ -44,7 +44,7 @@
     </div>
   </section>
 
-  <div class="marq" aria-hidden="true"><div class="marq-t" id="marq"><span>BLOCK 0 IS CLOSED</span><i></i><span>ONE DEV BUY</span><i></i><span>NO BUNDLES</span><i></i><span>NO SNIPERS</span><i></i><span>BLOCK 1 IS YOURS</span><i></i></div></div>
+  <div class="marq" aria-hidden="true"><div class="marq-t" id="marq"><span>BLOCK 0 OPENS WITH THE DEV</span><i></i><span>ONE BUY, INSIDE THE CREATE</span><i></i><span>NO BUNDLE FROM KAIRO</span><i></i><span>BLOCK 0 ON THE RECORD</span><i></i><span>BLOCK 1 IS YOURS</span><i></i></div></div>
 
   <!-- 01: the problem, drawn -->
   <section class="sec" id="problem">
@@ -54,9 +54,9 @@
         <div class="card rv"><h3>A bundled launch <span class="pill">BLOCK 0 FOR SALE</span></h3><canvas id="duoA" width="1120" height="660"></canvas>
           <div class="legend"><span><i style="background:var(--go)"></i>the dev</span><span><i style="background:var(--red)"></i>bundle wallets</span><span><i style="background:var(--amber)"></i>snipers</span><span><i style="background:#8fb7ff"></i>people</span></div>
           <p>The coin is created and, in the same block, the dev buys with twenty wallets while bots snipe the rest. People arrive later and buy what's left.</p></div>
-        <div class="card k rv d1"><h3>A Kairo launch <span class="pill">BLOCK 0 IS CLOSED</span></h3><canvas id="duoB" width="1120" height="660"></canvas>
-          <div class="legend"><span><i style="background:var(--go)"></i>the dev's one buy</span><span><i style="background:var(--amber)"></i>bots</span><span><i style="background:#8fb7ff"></i>people</span></div>
-          <p>Block 0 holds the dev's buy and nothing else. Bots that try it bounce. From block 1, everyone buys on the same curve.</p></div>
+        <div class="card k rv d1"><h3>A Kairo launch <span class="pill">BLOCK 0 ON THE RECORD</span></h3><canvas id="duoB" width="1120" height="660"></canvas>
+          <div class="legend"><span><i style="background:var(--go)"></i>the dev's one buy</span><span><i style="background:var(--amber)"></i>snipers, named</span><span><i style="background:#8fb7ff"></i>people</span></div>
+          <p>The dev's buy rides inside the create, so it lands first, in the open, and Kairo sends no bundle. A sniper can still try block 0: if one lands, the receipt names it. From block 1, everyone buys on the same curve.</p></div>
       </div>
     </div>
   </section>
@@ -67,7 +67,7 @@
       <div class="head"><div><p class="ey">02 · Anatomy of a bundle</p><h2 class="h2 split">Twenty wallets. <em>One hand.</em></h2></div>
         <div class="seg2 rv" id="bundleSeg"><button type="button" data-m="normal" class="on">A normal launch</button><button type="button" data-m="kairo">A Kairo launch</button></div></div>
       <div class="card bundle rv"><canvas id="bundleCv"></canvas>
-        <div class="legend"><span><i style="background:var(--amber)"></i>SOL from one wallet</span><span><i style="background:var(--red)"></i>a bundled buy</span><span><i style="background:var(--go)"></i>the creator's one buy</span></div></div>
+        <div class="legend"><span><i style="background:var(--amber)"></i>SOL from one wallet</span><span><i style="background:var(--red)"></i>a bundled buy</span><span><i style="background:var(--go)"></i>the creator's one buy</span><span><i style="background:transparent;border:2px solid var(--red)"></i>named on the receipt</span></div></div>
     </div>
   </section>
 
@@ -78,9 +78,9 @@
         <p class="ey">03 · How a launch works</p>
         <div class="steps" id="steps">
           <div class="step on"><span class="n">01 / 04 · CREATE</span><h3>One transaction, one buy.</h3><p>You name the coin, add an image and pick your buy. Kairo builds one transaction that creates the coin and makes your buy. You sign it once.</p></div>
-          <div class="step"><span class="n">02 / 04 · BLOCK 0</span><h3>Your buy is alone in block 0.</h3><p>The coin is born in the same transaction as your buy. Nothing else can land in that block: no bundle, no sniper, no second wallet.</p></div>
-          <div class="step"><span class="n">03 / 04 · BOUNCED</span><h3>Everyone else bounces off block 0.</h3><p>Bundles and snipers that try to buy in the creation block are refused, however big the tip they pay.</p></div>
-          <div class="step"><span class="n">04 / 04 · OPEN</span><h3>From block 1, anyone can buy.</h3><p>The very next block is open to everyone on the same curve. No hidden wallets at the bottom, and a receipt that proves it.</p></div>
+          <div class="step"><span class="n">02 / 04 · BLOCK 0</span><h3>Your buy opens block 0.</h3><p>The coin is born in the same transaction as your buy, so nobody can buy before you. Kairo sends nothing else: no bundle, no second wallet.</p></div>
+          <div class="step"><span class="n">03 / 04 · READ BACK</span><h3>Block 0 goes on the record.</h3><p>Kairo reads block 0 back from Solana. A sniper or a second wallet that landed next to you is named on the receipt, by address.</p></div>
+          <div class="step"><span class="n">04 / 04 · OPEN</span><h3>From block 1, anyone can buy.</h3><p>The very next block is open to everyone on the same curve, and the receipt shows who came first.</p></div>
         </div>
         <div class="rail" id="rail"><i></i><i></i><i></i><i></i></div>
       </div>
@@ -94,9 +94,9 @@
       <div class="head"><div><p class="ey">04 · Launch</p><h2 class="h2 split">Four steps. <em>One buy.</em></h2></div><a class="btn g rv" href="/app#launch">Launch a coin <span class="ar">→</span></a></div>
       <div class="steps4">
         <div class="s4 card rv"><span class="ix">01</span><img src="/img/sp-sparkg.webp" alt=""><b>Name it</b><p>A name, a ticker, an image and a line about it. Links to X, Telegram or a site if you have them.</p></div>
-        <div class="s4 card rv d1"><span class="ix">02</span><img src="/img/sp-cubeg.webp" alt=""><b>Set your buy</b><p>Choose how much of the supply you buy in block 0. It's the only buy there, and everyone can see it.</p></div>
-        <div class="s4 card rv d2"><span class="ix">03</span><img src="/img/sp-lock.webp" alt=""><b>Sign once</b><p>One transaction creates the coin and makes your buy. Block 0 closes behind it.</p></div>
-        <div class="s4 card rv d3"><span class="ix">04</span><img src="/img/sp-k.webp" alt=""><b>It's everyone's</b><p>From block 1, anyone can buy. Your coin's receipt shows block 0: one buy, yours.</p></div>
+        <div class="s4 card rv d1"><span class="ix">02</span><img src="/img/sp-cubeg.webp" alt=""><b>Set your buy</b><p>Choose how much SOL you buy with. It rides inside the create, first in block 0, and everyone can see it.</p></div>
+        <div class="s4 card rv d2"><span class="ix">03</span><img src="/img/sp-lock.webp" alt=""><b>Sign once</b><p>One transaction creates the coin on Raydium and makes your buy. Nobody can buy before you.</p></div>
+        <div class="s4 card rv d3"><span class="ix">04</span><img src="/img/sp-k.webp" alt=""><b>It's everyone's</b><p>From block 1, anyone can buy. Your coin's receipt shows block 0, read from the chain.</p></div>
       </div>
     </div>
   </section>
@@ -107,9 +107,9 @@
       <div class="head"><div><p class="ey">05 · Who it's for</p><h2 class="h2 split">Clean for creators. <em>Fair for buyers.</em></h2></div></div>
       <div class="who">
         <div class="card rv"><span class="wt">FOR CREATORS</span><h3>Launch without a shadow.</h3>
-          <ul><li>Your one buy, in the same transaction that creates the coin</li><li>No bundlers or snipers riding your launch in block 0</li><li>A receipt to post the second you launch</li><li>A coin people can check before they buy</li></ul></div>
+          <ul><li>Your one buy, in the same transaction that creates the coin</li><li>No bundle from Kairo next to your buy</li><li>A receipt to post the second you launch</li><li>A coin people can check before they buy</li></ul></div>
         <div class="card k rv d1"><span class="wt">FOR BUYERS</span><h3>Know who was first.</h3>
-          <ul><li>Block 0 is the dev alone, on every Kairo coin</li><li>No hidden wallets sitting on the lowest price</li><li>The dev's buy is public, in one place</li><li>Scan any Solana coin's block 0, on Kairo or not</li></ul></div>
+          <ul><li>Every Kairo coin shows who was in block 0</li><li>Wallets hiding next to the dev get named</li><li>The dev's buy is public, in one place</li><li>Scan any Solana coin's block 0, on Kairo or not</li></ul></div>
       </div>
     </div>
   </section>
@@ -135,7 +135,7 @@
         <div class="sim-top"><span class="tagl"><b>Simulation</b> · every wallet is made up</span><button class="btn g" id="simGo" type="button">Run it <span class="ar">→</span></button></div>
         <div class="lanes">
           <div class="lane"><div class="lane-h"><span class="t">A NORMAL LAUNCH</span><span class="num" id="simClockA">BLOCK 0</span></div><canvas id="simA"></canvas><div class="supply"><i class="dv" id="sAd"></i><i class="bt" id="sAb"></i><i class="hm" id="sAh"></i></div><div class="lane-f" id="simFA"><span>Press run to start.</span></div></div>
-          <div class="lane k"><div class="lane-h"><span class="t">A KAIRO LAUNCH</span><span class="num" id="simClockB">BLOCK 0</span></div><canvas id="simB"></canvas><div class="supply"><i class="dv" id="sBd"></i><i class="bt" id="sBb"></i><i class="hm" id="sBh"></i></div><div class="lane-f" id="simFB"><span>Press run to start.</span></div></div>
+          <div class="lane k"><div class="lane-h"><span class="t">A CLEAN BLOCK 0</span><span class="num" id="simClockB">BLOCK 0</span></div><canvas id="simB"></canvas><div class="supply"><i class="dv" id="sBd"></i><i class="bt" id="sBb"></i><i class="hm" id="sBh"></i></div><div class="lane-f" id="simFB"><span>Press run to start.</span></div></div>
         </div>
         <div class="verdicts">
           <div class="vd"><span>Supply bought in block 0 besides the dev</span><b class="num" id="vd1">—</b></div>
@@ -151,20 +151,20 @@
     <div class="float sf hide-m" style="left:2%;bottom:40px;width:96px;--bob:7s;--blur:blur(1.5px)" data-par="0.12"><img src="/img/sp-lock.webp" alt=""></div>
     <div class="wrap rcpt-wrap">
       <div><p class="ey">08 · The receipt</p><h2 class="h2 split">Every coin prints <em>its block 0.</em></h2>
-        <div class="cta rv" style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn g" href="/app#launch">Draft yours <span class="ar">→</span></a><a class="btn o" href="/docs#receipt">What each line means</a></div></div>
+        <div class="cta rv" style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn g" href="/app#launch">Launch yours <span class="ar">→</span></a><a class="btn o" href="/docs#receipt">What each line means</a></div></div>
       <div class="printer"><div class="slot"></div>
         <div class="paper" id="paper">
           <span class="spec">SPECIMEN</span>
           <div class="c big">KAIRO</div><div class="c">LAUNCH RECEIPT</div><hr>
           <div class="row"><span>COIN</span><span>YOUR COIN</span></div>
-          <div class="row"><span>VENUE</span><span>SOLANA</span></div><hr>
+          <div class="row"><span>VENUE</span><span>RAYDIUM</span></div><hr>
           <div class="row"><span>BLOCK 0</span><span>1 BUY</span></div>
           <div class="row"><span>BUYER</span><span>THE CREATOR</span></div>
-          <div class="row"><span>BUNDLES</span><span class="ok">0</span></div>
-          <div class="row"><span>SNIPES</span><span class="ok">0</span></div><hr>
+          <div class="row"><span>SIZE</span><span>1.74% OF SUPPLY</span></div>
+          <div class="row"><span>OTHER BUYERS</span><span class="ok">0 ✓</span></div><hr>
           <div class="row"><span>BLOCK 1</span><span class="ok">OPEN</span></div>
           <div class="row"><span>WHO CAN BUY</span><span>EVERYONE</span></div><hr>
-          <div class="c">BLOCK 0 IS CLOSED.</div>
+          <div class="c">BLOCK 0 HELD ONE BUY.</div>
           <div class="bars"></div>
         </div>
       </div>
@@ -184,7 +184,7 @@
             <div><b>BLOCK 0</b>Every wallet that bought in the block the coin was born.</div>
             <div><b>BUNDLES</b>Wallets funded by the dev, or by one hand, just before they bought.</div>
             <div><b>THE DEV</b>How much the creator bought in block 0.</div>
-            <div><b>VERDICT</b>What Kairo would have turned away in block 0.</div>
+            <div><b>VERDICT</b>Whether block 0 held the creator alone.</div>
           </div>
         </div>
       </div>
@@ -197,11 +197,11 @@
       <div class="head"><div><p class="ey">10 · Side by side</p><h2 class="h2 split">Same coin. <em>Different first block.</em></h2></div></div>
       <div class="vs" id="vsTable">
         <div class="vs-row"><div></div><div>A normal launch</div><div>A Kairo launch</div></div>
-        <div class="vs-row"><div>BLOCK 0</div><div>Anyone with a bundle and a tip</div><div><i class="ok">✓</i>One buy: the creator's</div></div>
-        <div class="vs-row"><div>BUNDLES</div><div>Twenty wallets that look like twenty buyers</div><div><i class="ok">✓</i>Can't land in block 0</div></div>
-        <div class="vs-row"><div>SNIPERS</div><div>First by milliseconds, in the creation block</div><div><i class="ok">✓</i>Refused in block 0, like everyone</div></div>
+        <div class="vs-row"><div>BLOCK 0</div><div>Anyone with a bundle and a tip</div><div><i class="ok">✓</i>Opens with the creator's buy, inside the create</div></div>
+        <div class="vs-row"><div>BUNDLES</div><div>Twenty wallets that look like twenty buyers</div><div><i class="ok">✓</i>None from Kairo, and any that land are named</div></div>
+        <div class="vs-row"><div>SNIPERS</div><div>First by milliseconds, in the creation block</div><div><i class="ok">✓</i>Second to the dev, and named on the receipt</div></div>
         <div class="vs-row"><div>BLOCK 1</div><div>Whatever is left after the bundle</div><div><i class="ok">✓</i>Open to everyone on the same curve</div></div>
-        <div class="vs-row"><div>PROOF</div><div>Trust the dev</div><div><i class="ok">✓</i>A receipt you can check on chain</div></div>
+        <div class="vs-row"><div>PROOF</div><div>Trust the dev</div><div><i class="ok">✓</i>A receipt read from the chain</div></div>
       </div>
     </div>
   </section>
@@ -211,8 +211,8 @@
     <div class="wrap">
       <div class="head"><div><p class="ey">11 · The rules</p><h2 class="h2 split">Three rules. <em>Every coin.</em></h2></div></div>
       <div class="rules">
-        <div class="rule card rv"><span class="ix">1</span><img src="/img/sp-lock.webp" alt=""><b>Block 0 is one buy.</b><p>The creator's, from the wallet that creates the coin, in the same transaction.</p></div>
-        <div class="rule card rv d1"><span class="ix">2</span><img src="/img/sp-cubeg.webp" alt=""><b>Nothing else lands in block 0.</b><p>No bundles, no second wallets, no snipers, whoever pays the biggest tip.</p></div>
+        <div class="rule card rv"><span class="ix">1</span><img src="/img/sp-lock.webp" alt=""><b>Block 0 opens with one buy.</b><p>The creator's, from the wallet that creates the coin, inside the same transaction.</p></div>
+        <div class="rule card rv d1"><span class="ix">2</span><img src="/img/sp-cubeg.webp" alt=""><b>Kairo sends nothing else.</b><p>No bundle, no second wallet. If anyone else lands in block 0, the receipt names them.</p></div>
         <div class="rule card rv d2"><span class="ix">3</span><img src="/img/sp-sparkg.webp" alt=""><b>From block 1, anyone can buy.</b><p>The next block is open to everyone, on the same curve, with nobody hidden below them.</p></div>
       </div>
     </div>
@@ -224,8 +224,8 @@
     <div class="wrap">
       <div class="head"><div><p class="ey">12 · Laps</p><h2 class="h2 split">Built in the open, <em>lap by lap.</em></h2></div></div>
       <div class="laps" id="lapsEl"><i class="fill"></i>
-        <div class="lap on rv"><span class="w">LAP 1 · LIVE NOW</span><b>The tools</b><p>The block 0 scanner, the simulator and the launch form. Check any coin's block 0 today.</p></div>
-        <div class="lap rv d1"><span class="w">LAP 2 · NEXT</span><b>Launches</b><p>Coins go live on Kairo: one transaction, your buy alone in block 0, open to everyone from block 1.</p></div>
+        <div class="lap on rv"><span class="w">LAP 1 · LIVE</span><b>The tools</b><p>The block 0 scanner and the simulator. Check any coin's block 0 today.</p></div>
+        <div class="lap on rv d1"><span class="w">LAP 2 · LIVE NOW</span><b>Launches</b><p>Coins go live on Raydium from Kairo: one transaction, your buy inside the create, a receipt of block 0.</p></div>
         <div class="lap rv d2"><span class="w">LAP 3</span><b>Coin pages</b><p>Every Kairo coin gets a page with its chart, its holders and the receipt of its block 0.</p></div>
         <div class="lap rv d3"><span class="w">LAP 4</span><b>$KAIRO</b><p>The coin of the launchpad, launched on Kairo as its own proof.</p></div>
       </div>
@@ -237,19 +237,19 @@
     <div class="wrap faq">
       <div><p class="ey">13 · Questions</p><h2 class="h2 split">The questions <em>worth asking.</em></h2></div>
       <div>
-        <details class="qa"><summary>What is Kairo?</summary><p>A launchpad for Solana coins with one rule that matters most: block 0 is closed. When you launch, your buy is the only one in the block your coin is born in. From the next block, anyone can buy.</p></details>
+        <details class="qa"><summary>What is Kairo?</summary><p>A launchpad for Solana coins, live on Raydium LaunchLab. When you launch, your buy rides inside the transaction that creates the coin, so block 0 opens with you. From the next block, anyone can buy. Every coin prints a receipt of its block 0, read from the chain.</p></details>
         <details class="qa"><summary>What is block 0?</summary><p>The block a coin is created in. On most launchpads that block is open to anyone who can get a transaction in, which is how bundles and snipers take the supply at the lowest price before a person can click.</p></details>
-        <details class="qa"><summary>Can the dev still buy?</summary><p>Yes, once in block 0. The creator's buy rides in the same transaction that creates the coin. It's the only trade in block 0, and it's printed on the coin's receipt for everyone to see.</p></details>
+        <details class="qa"><summary>Can the dev still buy?</summary><p>Yes, once, inside the create. It's the first trade the coin ever has, and it's printed on the coin's receipt for everyone to see.</p></details>
         <details class="qa"><summary>When can I buy?</summary><p>From block 1, the very next block, about half a second after the coin is born. Everyone buys on the same curve, in the order the network sets.</p></details>
-        <details class="qa"><summary>Can bots still buy?</summary><p>From block 1, like anyone. What they lose is block 0: no buying in the creation block, no hiding twenty wallets next to the dev at the lowest price.</p></details>
-        <details class="qa"><summary>Is Kairo live?</summary><p>Partly, and we'd rather say exactly which part. The block 0 scanner, the simulator and the launch form work today. Launches open next. There are no Kairo coins yet.</p></details>
+        <details class="qa"><summary>Can bots still buy?</summary><p>Yes. No launchpad on Raydium can stop a bot from buying, even in block 0. What Kairo does: the creator's buy goes first, inside the create, Kairo adds no bundle, and anyone who lands in block 0 next to the creator is named on the coin's receipt.</p></details>
+        <details class="qa"><summary>Is Kairo live?</summary><p>Yes. Launches are live on Raydium LaunchLab, next to the scanner and the simulator. Every coin launched through Kairo is listed in the app with its block 0.</p></details>
         <details class="qa"><summary>How do I check a coin?</summary><p>Paste its contract address into the scanner. It reads the coin's launch straight from Solana: who bought in block 0, who funded them, and how much the dev bought. Nothing is stored and nothing is signed.</p></details>
-        <details class="qa"><summary>Does it cost anything?</summary><p>The scanner, the simulator and the docs are free. Launch fees will be shown before you sign anything, when launches open.</p></details>
+        <details class="qa"><summary>Does it cost anything?</summary><p>Kairo takes nothing. A launch costs about 0.025 SOL in network rent and fees, plus your buy. Raydium's 1% trading fee applies to every trade on the curve.</p></details>
       </div>
     </div>
   </section>
 
-  <div class="marq dark" aria-hidden="true"><div class="marq-t" id="marq2"><span>LAUNCH WITH ONE BUY</span><i></i><span>BLOCK 1 IS YOURS</span><i></i><span>NO BUNDLES IN BLOCK 0</span><i></i><span>A RECEIPT FOR EVERY COIN</span><i></i><span>BLOCK 0 IS CLOSED</span><i></i></div></div>
+  <div class="marq dark" aria-hidden="true"><div class="marq-t" id="marq2"><span>LAUNCH WITH ONE BUY</span><i></i><span>BLOCK 1 IS YOURS</span><i></i><span>LIVE ON RAYDIUM</span><i></i><span>A RECEIPT FOR EVERY COIN</span><i></i><span>BLOCK 0 ON THE RECORD</span><i></i></div></div>
 
   <section class="final" id="final">
     <div class="float sf" style="left:13%;top:20%;width:clamp(54px,7vw,96px);--bob:6s" data-par="0.22"><img src="/img/sp-cubeg.webp" alt=""></div>
@@ -257,7 +257,7 @@
     <div class="float sf hide-m" style="right:25%;top:12%;width:52px;--bob:5s" data-par="0.4"><img src="/img/sp-sparkg.webp" alt=""></div>
     <div class="float sf hide-m" style="left:24%;bottom:16%;width:46px;--bob:5.5s;--blur:blur(1px)" data-par="0.36"><img src="/img/sp-sparki.webp" alt=""></div>
     <img class="k" src="/img/sp-k.webp" alt="" data-par="0.12">
-    <h2 class="split">Block 0 is closed.<br><em>Block 1 is yours.</em></h2>
+    <h2 class="split">Block 0, on the record.<br><em>Block 1 is yours.</em></h2>
     <div class="cta"><a class="btn g lg" href="/app#launch">Launch a coin <span class="ar">→</span></a><a class="btn o lg" href="/docs">Read the docs</a></div>
   </section>
 </main>
